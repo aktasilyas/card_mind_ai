@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/utils/sm2_algorithm.dart';
 import '../../../deck/domain/usecases/get_due_cards.dart';
 import '../../../deck/domain/usecases/update_card.dart';
+import '../../../stats/domain/usecases/update_after_study.dart';
 import '../../domain/entities/study.dart';
 
 part 'study_event.dart';
@@ -11,7 +12,7 @@ part 'study_state.dart';
 
 @injectable
 class StudyBloc extends Bloc<StudyEvent, StudyState> {
-  StudyBloc(this._getDueCards, this._updateCard)
+  StudyBloc(this._getDueCards, this._updateCard, this._updateAfterStudy)
       : super(const StudyInitial()) {
     on<LoadStudySession>(_onLoadStudySession);
     on<FlipCard>(_onFlipCard);
@@ -20,6 +21,9 @@ class StudyBloc extends Bloc<StudyEvent, StudyState> {
 
   final GetDueCards _getDueCards;
   final UpdateCard _updateCard;
+  final UpdateAfterStudy _updateAfterStudy;
+
+  DateTime? _sessionStartTime;
 
   Future<void> _onLoadStudySession(
     LoadStudySession event,
@@ -35,6 +39,7 @@ class StudyBloc extends Bloc<StudyEvent, StudyState> {
         if (cards.isEmpty) {
           emit(const StudyEmpty());
         } else {
+          _sessionStartTime = DateTime.now();
           emit(StudyInProgress(
             session: StudySession(deckId: event.deckId, cards: cards),
           ));
@@ -90,10 +95,28 @@ class StudyBloc extends Bloc<StudyEvent, StudyState> {
     final nextIndex = current.session.currentIndex + 1;
 
     if (nextIndex >= current.session.cards.length) {
-      final avgRating = newRatings.reduce((a, b) => a + b) / newRatings.length;
+      final avgRating =
+          newRatings.reduce((a, b) => a + b) / newRatings.length;
+
+      final durationSeconds = _sessionStartTime != null
+          ? DateTime.now().difference(_sessionStartTime!).inSeconds
+          : 0;
+
+      final statsResult = await _updateAfterStudy(UpdateAfterStudyParams(
+        deckId: current.session.deckId,
+        ratings: newRatings,
+        durationSeconds: durationSeconds,
+      ));
+
+      final xpEarned = statsResult.fold(
+        (_) => 0,
+        (result) => result.xpEarned,
+      );
+
       emit(StudyComplete(
         totalCards: current.session.cards.length,
         averageRating: avgRating,
+        xpEarned: xpEarned,
       ));
     } else {
       emit(StudyInProgress(

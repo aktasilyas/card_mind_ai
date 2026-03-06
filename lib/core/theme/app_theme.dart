@@ -2,20 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppTheme {
-  static const _seedColor = Color(0xFF6750A4);
+  static const duoGreen = Color(0xFF58CC02);
+  static const duoBlue = Color(0xFF1CB0F6);
+  static const duoOrange = Color(0xFFFF9600);
+  static const duoRed = Color(0xFFFF4B4B);
 
-  static final _textTheme = GoogleFonts.plusJakartaSansTextTheme();
+  static final _textTheme = GoogleFonts.nunitoTextTheme();
 
   static ThemeData get lightTheme => _buildTheme(Brightness.light);
   static ThemeData get darkTheme => _buildTheme(Brightness.dark);
 
   static ThemeData _buildTheme(Brightness brightness) {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: _seedColor,
+      seedColor: duoGreen,
       brightness: brightness,
     );
     final baseTextTheme = brightness == Brightness.dark
-        ? _textTheme.apply(bodyColor: Colors.white, displayColor: Colors.white)
+        ? _textTheme.apply(
+            bodyColor: Colors.white, displayColor: Colors.white)
         : _textTheme;
 
     return ThemeData(
@@ -26,6 +30,11 @@ abstract class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: brightness == Brightness.dark
+                ? Colors.white.withValues(alpha: 0.12)
+                : colorScheme.outline.withValues(alpha: 0.2),
+          ),
         ),
         color: brightness == Brightness.dark
             ? Colors.white.withValues(alpha: 0.08)
@@ -33,6 +42,9 @@ abstract class AppTheme {
       ),
       appBarTheme: const AppBarTheme(
         centerTitle: true,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        indicatorColor: duoGreen.withValues(alpha: 0.2),
       ),
     );
   }
@@ -59,4 +71,13 @@ abstract class AppTheme {
           ),
         ],
       );
+
+  static const List<List<Color>> deckGradients = [
+    [Color(0xFF58CC02), Color(0xFF46A302)],
+    [Color(0xFF1CB0F6), Color(0xFF1899D6)],
+    [Color(0xFFFF9600), Color(0xFFE08600)],
+    [Color(0xFFFF4B4B), Color(0xFFEA2B2B)],
+    [Color(0xFFCE82FF), Color(0xFFAF5CF7)],
+    [Color(0xFF2B70C9), Color(0xFF1F5CA1)],
+  ];
 }

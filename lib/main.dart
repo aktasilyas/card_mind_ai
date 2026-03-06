@@ -10,6 +10,9 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/deck/data/models/deck_model.dart';
 import 'features/deck/data/models/flashcard_model.dart';
+import 'features/stats/data/models/study_session_record_model.dart';
+import 'features/stats/data/models/user_stats_model.dart';
+import 'features/stats/presentation/bloc/stats_bloc.dart';
 import 'features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'shared/services/admob_service.dart';
 
@@ -19,6 +22,8 @@ Future<void> main() async {
 
   Hive.registerAdapter(DeckModelAdapter());
   Hive.registerAdapter(FlashcardModelAdapter());
+  Hive.registerAdapter(UserStatsModelAdapter());
+  Hive.registerAdapter(StudySessionRecordModelAdapter());
 
   await configureDependencies();
 
@@ -39,19 +44,26 @@ class CardMindApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<SubscriptionBloc>()..add(const LoadSubscription()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              getIt<SubscriptionBloc>()..add(const LoadSubscription()),
+        ),
+        BlocProvider(
+          create: (_) => getIt<StatsBloc>()..add(const LoadStats()),
+        ),
+      ],
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: MaterialApp.router(
-        title: 'CardMind AI',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.dark,
-        routerConfig: appRouter,
-        debugShowCheckedModeBanner: false,
-      ),
+          title: 'CardMind AI',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.dark,
+          routerConfig: appRouter,
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
   }

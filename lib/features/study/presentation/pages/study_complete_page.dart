@@ -2,22 +2,29 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../shared/widgets/duo_button.dart';
+
 class StudyCompletePage extends StatefulWidget {
   const StudyCompletePage({
     super.key,
     required this.totalCards,
     required this.averageRating,
+    required this.xpEarned,
   });
 
   final int totalCards;
   final double averageRating;
+  final int xpEarned;
 
   @override
   State<StudyCompletePage> createState() => _StudyCompletePageState();
 }
 
-class _StudyCompletePageState extends State<StudyCompletePage> {
+class _StudyCompletePageState extends State<StudyCompletePage>
+    with SingleTickerProviderStateMixin {
   late final ConfettiController _confettiController;
+  late final AnimationController _xpAnimController;
+  late final Animation<double> _xpAnimation;
 
   @override
   void initState() {
@@ -25,11 +32,21 @@ class _StudyCompletePageState extends State<StudyCompletePage> {
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 3));
     _confettiController.play();
+
+    _xpAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _xpAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _xpAnimController, curve: Curves.easeOutBack),
+    );
+    _xpAnimController.forward();
   }
 
   @override
   void dispose() {
     _confettiController.dispose();
+    _xpAnimController.dispose();
     super.dispose();
   }
 
@@ -51,8 +68,28 @@ class _StudyCompletePageState extends State<StudyCompletePage> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Harika İş!',
+                    'Harika Is!',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  AnimatedBuilder(
+                    animation: _xpAnimation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, -20 * _xpAnimation.value),
+                        child: Opacity(
+                          opacity: _xpAnimation.value.clamp(0.0, 1.0),
+                          child: Text(
+                            '+${widget.xpEarned} XP',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF58CC02),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 24),
                   _StatRow(
@@ -67,10 +104,10 @@ class _StudyCompletePageState extends State<StudyCompletePage> {
                     value: widget.averageRating.toStringAsFixed(1),
                   ),
                   const SizedBox(height: 40),
-                  FilledButton.icon(
+                  DuoButton(
+                    text: 'Ana Sayfaya Don',
+                    icon: Icons.home,
                     onPressed: () => context.go('/'),
-                    icon: const Icon(Icons.home),
-                    label: const Text('Ana Sayfaya Dön'),
                   ),
                 ],
               ),

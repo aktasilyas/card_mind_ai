@@ -2,7 +2,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:card_mind_ai/core/errors/failures.dart';
 import 'package:card_mind_ai/features/deck/domain/entities/flashcard.dart';
 import 'package:card_mind_ai/features/deck/domain/usecases/get_due_cards.dart';
+import 'package:card_mind_ai/features/stats/domain/entities/user_stats.dart';
 import 'package:card_mind_ai/features/deck/domain/usecases/update_card.dart';
+import 'package:card_mind_ai/features/stats/domain/usecases/update_after_study.dart';
 import 'package:card_mind_ai/features/study/presentation/bloc/study_bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,15 +14,19 @@ class MockGetDueCards extends Mock implements GetDueCards {}
 
 class MockUpdateCard extends Mock implements UpdateCard {}
 
+class MockUpdateAfterStudy extends Mock implements UpdateAfterStudy {}
+
 void main() {
   late StudyBloc bloc;
   late MockGetDueCards mockGetDueCards;
   late MockUpdateCard mockUpdateCard;
+  late MockUpdateAfterStudy mockUpdateAfterStudy;
 
   setUp(() {
     mockGetDueCards = MockGetDueCards();
     mockUpdateCard = MockUpdateCard();
-    bloc = StudyBloc(mockGetDueCards, mockUpdateCard);
+    mockUpdateAfterStudy = MockUpdateAfterStudy();
+    bloc = StudyBloc(mockGetDueCards, mockUpdateCard, mockUpdateAfterStudy);
   });
 
   tearDown(() => bloc.close());
@@ -33,6 +39,11 @@ void main() {
       front: '',
       back: '',
       dueDate: DateTime(2024),
+    ));
+    registerFallbackValue(const UpdateAfterStudyParams(
+      deckId: '',
+      ratings: [],
+      durationSeconds: 0,
     ));
   });
 
@@ -138,6 +149,12 @@ void main() {
         );
         when(() => mockUpdateCard(any()))
             .thenAnswer((_) async => const Right(unit));
+        when(() => mockUpdateAfterStudy(any())).thenAnswer(
+          (_) async => Right(StudyResult(
+            updatedStats: UserStats.empty(),
+            xpEarned: 15,
+          )),
+        );
         return bloc;
       },
       act: (bloc) async {

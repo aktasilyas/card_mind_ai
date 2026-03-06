@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/game_header.dart';
 import '../../domain/entities/deck.dart';
 import '../bloc/deck_bloc.dart';
 
@@ -21,122 +22,142 @@ class _DeckView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Destelerim'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.workspace_premium),
-            onPressed: () => context.push('/subscription'),
-          ),
-        ],
-      ),
-      body: BlocBuilder<DeckBloc, DeckState>(
-        builder: (context, state) {
-          return switch (state) {
-            DeckInitial() => const SizedBox.shrink(),
-            DeckLoading() =>
-              const Center(child: CircularProgressIndicator()),
-            DeckLoaded(:final decks) => decks.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
+      body: Column(
+        children: [
+          const GameHeader(),
+          Expanded(
+            child: BlocBuilder<DeckBloc, DeckState>(
+              builder: (context, state) {
+                return switch (state) {
+                  DeckInitial() => const SizedBox.shrink(),
+                  DeckLoading() =>
+                    const Center(child: CircularProgressIndicator()),
+                  DeckLoaded(:final decks) => decks.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.style_outlined,
+                                  size: 80,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.4),
+                                ),
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'Henuz deste yok,\nilk desteni olustur!',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 24),
+                                FilledButton.icon(
+                                  onPressed: () =>
+                                      _showCreateDeckSheet(context),
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Deste Olustur'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: decks.length,
+                          padding: const EdgeInsets.all(16),
+                          itemBuilder: (context, index) {
+                            final deck = decks[index];
+                            return _DeckCard(
+                              deck: deck,
+                              gradientIndex: index,
+                            );
+                          },
+                        ),
+                  DeckError(:final message) => Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.style_outlined,
-                            size: 80,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withValues(alpha: 0.4),
-                          ),
+                          Text(message),
                           const SizedBox(height: 16),
-                          const Text(
-                            'Henüz deste yok,\nilk desteni oluştur!',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 18),
+                          ElevatedButton(
+                            onPressed: () => context
+                                .read<DeckBloc>()
+                                .add(const LoadDecks()),
+                            child: const Text('Tekrar Dene'),
                           ),
                         ],
                       ),
                     ),
-                  )
-                : ListView.builder(
-                    itemCount: decks.length,
-                    padding: const EdgeInsets.all(16),
-                    itemBuilder: (context, index) {
-                      final deck = decks[index];
-                      return _DeckCard(deck: deck);
-                    },
-                  ),
-            DeckError(:final message) => Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(message),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () =>
-                          context.read<DeckBloc>().add(const LoadDecks()),
-                      child: const Text('Tekrar Dene'),
-                    ),
-                  ],
-                ),
-              ),
-          };
-        },
+                };
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCreateDeckDialog(context),
-        child: const Icon(Icons.add),
+        onPressed: () => _showCreateDeckSheet(context),
+        backgroundColor: AppTheme.duoGreen,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
-  void _showCreateDeckDialog(BuildContext context) {
+  void _showCreateDeckSheet(BuildContext context) {
     final nameController = TextEditingController();
     final descriptionController = TextEditingController();
     final bloc = context.read<DeckBloc>();
 
-    showDialog<void>(
+    showModalBottomSheet<void>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Yeni Deste Oluştur'),
-          content: Column(
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
+          ),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Text(
+                'Yeni Deste Olustur',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'İsim'),
+                decoration: const InputDecoration(labelText: 'Isim'),
                 autofocus: true,
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Açıklama'),
+                decoration: const InputDecoration(labelText: 'Aciklama'),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () {
+                  final name = nameController.text.trim();
+                  if (name.isNotEmpty) {
+                    bloc.add(CreateDeckEvent(
+                      name: name,
+                      description: descriptionController.text.trim(),
+                    ));
+                    Navigator.of(sheetContext).pop();
+                  }
+                },
+                child: const Text('Olustur'),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('İptal'),
-            ),
-            FilledButton(
-              onPressed: () {
-                final name = nameController.text.trim();
-                if (name.isNotEmpty) {
-                  bloc.add(CreateDeckEvent(
-                    name: name,
-                    description: descriptionController.text.trim(),
-                  ));
-                  Navigator.of(dialogContext).pop();
-                }
-              },
-              child: const Text('Oluştur'),
-            ),
-          ],
         );
       },
     );
@@ -144,17 +165,35 @@ class _DeckView extends StatelessWidget {
 }
 
 class _DeckCard extends StatelessWidget {
-  const _DeckCard({required this.deck});
+  const _DeckCard({required this.deck, required this.gradientIndex});
 
   final Deck deck;
+  final int gradientIndex;
 
   @override
   Widget build(BuildContext context) {
+    final colors =
+        AppTheme.deckGradients[gradientIndex % AppTheme.deckGradients.length];
+
     return GestureDetector(
-      onTap: () => context.push('/deck/${deck.id}'),
+      onTap: () => context.go('/deck/${deck.id}'),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        decoration: AppTheme.glassmorphism,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: colors,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: colors[0].withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -163,16 +202,10 @@ class _DeckCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withValues(alpha: 0.15),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  Icons.style,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                child: const Icon(Icons.style, color: Colors.white),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -184,6 +217,7 @@ class _DeckCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
                     ),
                     if (deck.description.isNotEmpty)
@@ -191,10 +225,7 @@ class _DeckCard extends StatelessWidget {
                         deck.description,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.6),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                       ),
                   ],
@@ -204,21 +235,22 @@ class _DeckCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '${deck.cardCount} kart',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Colors.amber.shade700,
+                    color: Colors.white,
                   ),
                 ),
               ),
               const SizedBox(width: 8),
               IconButton(
-                icon: const Icon(Icons.delete_outline, size: 20),
+                icon: const Icon(Icons.delete_outline,
+                    size: 20, color: Colors.white70),
                 onPressed: () => context
                     .read<DeckBloc>()
                     .add(DeleteDeckEvent(id: deck.id)),

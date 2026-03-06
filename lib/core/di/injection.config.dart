@@ -47,6 +47,24 @@ import 'package:card_mind_ai/features/deck/domain/usecases/update_card.dart'
     as _i747;
 import 'package:card_mind_ai/features/deck/presentation/bloc/deck_bloc.dart'
     as _i1034;
+import 'package:card_mind_ai/features/stats/data/datasources/stats_local_datasource.dart'
+    as _i522;
+import 'package:card_mind_ai/features/stats/data/models/study_session_record_model.dart'
+    as _i636;
+import 'package:card_mind_ai/features/stats/data/models/user_stats_model.dart'
+    as _i435;
+import 'package:card_mind_ai/features/stats/data/repositories/stats_repository_impl.dart'
+    as _i870;
+import 'package:card_mind_ai/features/stats/domain/repositories/stats_repository.dart'
+    as _i613;
+import 'package:card_mind_ai/features/stats/domain/usecases/get_user_stats.dart'
+    as _i91;
+import 'package:card_mind_ai/features/stats/domain/usecases/get_weekly_records.dart'
+    as _i543;
+import 'package:card_mind_ai/features/stats/domain/usecases/update_after_study.dart'
+    as _i688;
+import 'package:card_mind_ai/features/stats/presentation/bloc/stats_bloc.dart'
+    as _i631;
 import 'package:card_mind_ai/features/study/presentation/bloc/study_bloc.dart'
     as _i354;
 import 'package:card_mind_ai/features/subscription/data/datasources/subscription_remote_datasource.dart'
@@ -85,12 +103,26 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.cardsBox,
       preResolve: true,
     );
+    await gh.factoryAsync<_i979.Box<_i435.UserStatsModel>>(
+      () => registerModule.statsBox,
+      preResolve: true,
+    );
+    await gh.factoryAsync<_i979.Box<_i636.StudySessionRecordModel>>(
+      () => registerModule.sessionRecordsBox,
+      preResolve: true,
+    );
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => registerModule.prefs,
       preResolve: true,
     );
     gh.singleton<_i466.DioClient>(() => _i466.DioClient());
     gh.singleton<_i573.AdmobService>(() => _i573.AdmobService());
+    gh.lazySingleton<_i522.StatsLocalDatasource>(
+      () => _i522.StatsLocalDatasourceImpl(
+        gh<_i979.Box<_i435.UserStatsModel>>(),
+        gh<_i979.Box<_i636.StudySessionRecordModel>>(),
+      ),
+    );
     gh.lazySingleton<_i837.DeckLocalDatasource>(
       () => _i837.DeckLocalDatasourceImpl(
         gh<_i979.Box<_i550.DeckModel>>(),
@@ -103,6 +135,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i310.AiCardRemoteDatasource>(
       () => _i310.AiCardRemoteDatasourceImpl(gh<_i466.DioClient>()),
     );
+    gh.lazySingleton<_i613.StatsRepository>(
+      () => _i870.StatsRepositoryImpl(gh<_i522.StatsLocalDatasource>()),
+    );
     gh.lazySingleton<_i401.SubscriptionRepository>(
       () => _i844.SubscriptionRepositoryImpl(
         gh<_i273.SubscriptionRemoteDatasource>(),
@@ -110,6 +145,21 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i430.DeckRepository>(
       () => _i581.DeckRepositoryImpl(gh<_i837.DeckLocalDatasource>()),
+    );
+    gh.factory<_i91.GetUserStats>(
+      () => _i91.GetUserStats(gh<_i613.StatsRepository>()),
+    );
+    gh.factory<_i543.GetWeeklyRecords>(
+      () => _i543.GetWeeklyRecords(gh<_i613.StatsRepository>()),
+    );
+    gh.factory<_i688.UpdateAfterStudy>(
+      () => _i688.UpdateAfterStudy(gh<_i613.StatsRepository>()),
+    );
+    gh.factory<_i631.StatsBloc>(
+      () => _i631.StatsBloc(
+        gh<_i91.GetUserStats>(),
+        gh<_i543.GetWeeklyRecords>(),
+      ),
     );
     gh.factory<_i908.AddCard>(() => _i908.AddCard(gh<_i430.DeckRepository>()));
     gh.factory<_i110.CreateDeck>(
@@ -140,9 +190,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i260.DeleteDeck>(),
       ),
     );
-    gh.factory<_i354.StudyBloc>(
-      () => _i354.StudyBloc(gh<_i923.GetDueCards>(), gh<_i747.UpdateCard>()),
-    );
     gh.factory<_i29.GetSubscriptionStatus>(
       () => _i29.GetSubscriptionStatus(gh<_i401.SubscriptionRepository>()),
     );
@@ -151,6 +198,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i29.RestorePurchases>(
       () => _i29.RestorePurchases(gh<_i401.SubscriptionRepository>()),
+    );
+    gh.factory<_i354.StudyBloc>(
+      () => _i354.StudyBloc(
+        gh<_i923.GetDueCards>(),
+        gh<_i747.UpdateCard>(),
+        gh<_i688.UpdateAfterStudy>(),
+      ),
     );
     gh.factory<_i251.GenerateCardsFromText>(
       () => _i251.GenerateCardsFromText(

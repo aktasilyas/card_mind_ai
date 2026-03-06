@@ -26,10 +26,12 @@ final class StudyComplete extends StudyState {
   const StudyComplete({
     required this.totalCards,
     required this.averageRating,
+    required this.xpEarned,
   });
 
   final int totalCards;
   final double averageRating;
+  final int xpEarned;
 }
 
 final class StudyEmpty extends StudyState {
