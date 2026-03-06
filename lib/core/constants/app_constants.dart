@@ -6,4 +6,12 @@ abstract class AppConstants {
   static const String openAiBaseUrl = 'https://api.openai.com/v1';
   static const String openAiModel = 'gpt-4o-mini';
   static const int maxCardsPerGeneration = 20;
+
+  // Monetization
+  static const String revenueCatEntitlementId = 'premium';
+  static const String bannerAdUnitId =
+      'ca-app-pub-3940256099942544/6300978111';
+  static const String interstitialAdUnitId =
+      'ca-app-pub-3940256099942544/1033173712';
+  static const int interstitialFrequency = 3;
 }

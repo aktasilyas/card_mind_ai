@@ -25,3 +25,12 @@ class NetworkException implements Exception {
   @override
   String toString() => 'NetworkException(message: $message)';
 }
+
+class PurchaseException implements Exception {
+  const PurchaseException({required this.message});
+
+  final String message;
+
+  @override
+  String toString() => 'PurchaseException(message: $message)';
+}

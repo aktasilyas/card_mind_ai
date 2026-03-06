@@ -23,3 +23,7 @@ final class LimitExceededFailure extends Failure {
 final class AuthFailure extends Failure {
   const AuthFailure(super.message);
 }
+
+final class PurchaseFailure extends Failure {
+  const PurchaseFailure(super.message);
+}
