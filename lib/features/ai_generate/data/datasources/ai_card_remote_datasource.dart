@@ -52,16 +52,23 @@ class AiCardRemoteDatasourceImpl implements AiCardRemoteDatasource {
         },
       );
 
+      final data = response.data;
+      if (data == null) {
+        throw const ServerException(message: 'Boş yanıt alındı');
+      }
+
       final content =
-          response.data!['choices'][0]['message']['content'] as String;
+          data['choices'][0]['message']['content'] as String;
 
       final jsonContent = content.trim();
-      final List<dynamic> cardsJson =
-          json.decode(jsonContent) as List<dynamic>;
+      final cardsJson =
+          (json.decode(jsonContent) as List<Object?>).cast<Map<String, Object?>>();
 
       return cardsJson
           .map(
-            (e) => FlashcardGenerationModel.fromJson(e as Map<String, dynamic>),
+            (e) => FlashcardGenerationModel.fromJson(
+              e.cast<String, dynamic>(),
+            ),
           )
           .toList();
     } on DioException catch (e) {

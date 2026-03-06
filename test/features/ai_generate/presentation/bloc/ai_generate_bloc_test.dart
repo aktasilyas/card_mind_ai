@@ -56,7 +56,7 @@ void main() {
         return bloc;
       },
       act: (bloc) =>
-          bloc.add(const GenerateCards(text: 'Test metin', count: 5)),
+          bloc.add(const GenerateCards(text: 'Test metin')),
       expect: () => [
         isA<AiGenerateLoading>(),
         isA<AiGenerateSuccess>()
@@ -72,7 +72,7 @@ void main() {
         return bloc;
       },
       act: (bloc) =>
-          bloc.add(const GenerateCards(text: 'Test metin', count: 5)),
+          bloc.add(const GenerateCards(text: 'Test metin')),
       expect: () => [
         isA<AiGenerateLoading>(),
         isA<AiGenerateError>()
@@ -90,7 +90,7 @@ void main() {
         return bloc;
       },
       act: (bloc) =>
-          bloc.add(const GenerateCards(text: 'Test metin', count: 5)),
+          bloc.add(const GenerateCards(text: 'Test metin')),
       expect: () => [
         isA<AiGenerateLoading>(),
         isA<AiGenerateLimitReached>(),
@@ -107,7 +107,7 @@ void main() {
         return bloc;
       },
       act: (bloc) =>
-          bloc.add(const GenerateCards(text: 'Test metin', count: 5)),
+          bloc.add(const GenerateCards(text: 'Test metin')),
       expect: () => [
         isA<AiGenerateLoading>(),
         isA<AiGenerateError>().having(

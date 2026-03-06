@@ -13,28 +13,37 @@ class AiGenerateBloc extends Bloc<AiGenerateEvent, AiGenerateState> {
   AiGenerateBloc(this._generateCardsFromText)
       : super(const AiGenerateInitial()) {
     on<GenerateCards>(_onGenerateCards);
+    on<UpdateCardCount>(_onUpdateCardCount);
   }
 
   final GenerateCardsFromText _generateCardsFromText;
+
+  void _onUpdateCardCount(
+    UpdateCardCount event,
+    Emitter<AiGenerateState> emit,
+  ) {
+    emit(AiGenerateInitial(cardCount: event.count));
+  }
 
   Future<void> _onGenerateCards(
     GenerateCards event,
     Emitter<AiGenerateState> emit,
   ) async {
-    emit(const AiGenerateLoading());
+    final count = state.cardCount;
+    emit(AiGenerateLoading(cardCount: count));
     final result = await _generateCardsFromText(
-      GenerateCardsParams(text: event.text, count: event.count),
+      GenerateCardsParams(text: event.text, count: count),
     );
     result.fold(
       (failure) {
         if (failure is LimitExceededFailure) {
-          emit(const AiGenerateLimitReached());
+          emit(AiGenerateLimitReached(cardCount: count));
         } else {
-          emit(AiGenerateError(failure.message));
+          emit(AiGenerateError(failure.message, cardCount: count));
         }
       },
       (generationResult) =>
-          emit(AiGenerateSuccess(generationResult.generatedCards)),
+          emit(AiGenerateSuccess(generationResult.generatedCards, cardCount: count)),
     );
   }
 }

@@ -25,7 +25,6 @@ class _AiGenerateView extends StatefulWidget {
 
 class _AiGenerateViewState extends State<_AiGenerateView> {
   final _textController = TextEditingController();
-  int _cardCount = 5;
 
   @override
   void dispose() {
@@ -52,24 +51,34 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                const Text('Kart sayısı:'),
-                const SizedBox(width: 16),
-                DropdownButton<int>(
-                  value: _cardCount,
-                  items: List.generate(
-                    16,
-                    (i) => DropdownMenuItem(
-                      value: i + 5,
-                      child: Text('${i + 5}'),
+            BlocBuilder<AiGenerateBloc, AiGenerateState>(
+              buildWhen: (previous, current) =>
+                  previous.cardCount != current.cardCount,
+              builder: (context, state) {
+                return Row(
+                  children: [
+                    const Text('Kart sayısı:'),
+                    const SizedBox(width: 16),
+                    DropdownButton<int>(
+                      value: state.cardCount,
+                      items: List.generate(
+                        16,
+                        (i) => DropdownMenuItem(
+                          value: i + 5,
+                          child: Text('${i + 5}'),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        if (value != null) {
+                          context
+                              .read<AiGenerateBloc>()
+                              .add(UpdateCardCount(value));
+                        }
+                      },
                     ),
-                  ),
-                  onChanged: (value) {
-                    if (value != null) setState(() => _cardCount = value);
-                  },
-                ),
-              ],
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 16),
             BlocConsumer<AiGenerateBloc, AiGenerateState>(
@@ -88,7 +97,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
                           final text = _textController.text.trim();
                           if (text.isEmpty) return;
                           context.read<AiGenerateBloc>().add(
-                                GenerateCards(text: text, count: _cardCount),
+                                GenerateCards(text: text),
                               );
                         },
                   child: state is AiGenerateLoading
