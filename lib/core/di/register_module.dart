@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/deck/data/models/deck_model.dart';
 import '../../features/deck/data/models/flashcard_model.dart';
@@ -14,4 +15,7 @@ abstract class RegisterModule {
   @preResolve
   Future<Box<FlashcardModel>> get cardsBox =>
       Hive.openBox<FlashcardModel>(AppConstants.hiveCardsBox);
+
+  @preResolve
+  Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
 }
