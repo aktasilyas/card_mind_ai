@@ -79,4 +79,24 @@ class DeckRepositoryImpl implements DeckRepository {
       return Left(CacheFailure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> updateCard(Flashcard card) async {
+    try {
+      await _localDatasource.updateCard(FlashcardModel.fromEntity(card));
+      return const Right(unit);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Flashcard>>> getDueCards(String deckId) async {
+    try {
+      final models = await _localDatasource.getDueCardsByDeck(deckId);
+      return Right(models.map((m) => m.toEntity()).toList());
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
+    }
+  }
 }

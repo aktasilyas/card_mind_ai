@@ -41,8 +41,29 @@ import 'package:card_mind_ai/features/deck/domain/usecases/get_cards_by_deck.dar
     as _i292;
 import 'package:card_mind_ai/features/deck/domain/usecases/get_decks.dart'
     as _i573;
+import 'package:card_mind_ai/features/deck/domain/usecases/get_due_cards.dart'
+    as _i923;
+import 'package:card_mind_ai/features/deck/domain/usecases/update_card.dart'
+    as _i747;
 import 'package:card_mind_ai/features/deck/presentation/bloc/deck_bloc.dart'
     as _i1034;
+import 'package:card_mind_ai/features/study/presentation/bloc/study_bloc.dart'
+    as _i354;
+import 'package:card_mind_ai/features/subscription/data/datasources/subscription_remote_datasource.dart'
+    as _i273;
+import 'package:card_mind_ai/features/subscription/data/repositories/subscription_repository_impl.dart'
+    as _i844;
+import 'package:card_mind_ai/features/subscription/domain/repositories/subscription_repository.dart'
+    as _i401;
+import 'package:card_mind_ai/features/subscription/domain/usecases/get_subscription_status.dart'
+    as _i29;
+import 'package:card_mind_ai/features/subscription/domain/usecases/purchase_premium.dart'
+    as _i511;
+import 'package:card_mind_ai/features/subscription/domain/usecases/restore_purchases.dart'
+    as _i29;
+import 'package:card_mind_ai/features/subscription/presentation/bloc/subscription_bloc.dart'
+    as _i145;
+import 'package:card_mind_ai/shared/services/admob_service.dart' as _i573;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:hive/hive.dart' as _i979;
 import 'package:injectable/injectable.dart' as _i526;
@@ -69,14 +90,23 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i466.DioClient>(() => _i466.DioClient());
+    gh.singleton<_i573.AdmobService>(() => _i573.AdmobService());
     gh.lazySingleton<_i837.DeckLocalDatasource>(
       () => _i837.DeckLocalDatasourceImpl(
         gh<_i979.Box<_i550.DeckModel>>(),
         gh<_i979.Box<_i421.FlashcardModel>>(),
       ),
     );
+    gh.lazySingleton<_i273.SubscriptionRemoteDatasource>(
+      () => _i273.SubscriptionRemoteDatasourceImpl(),
+    );
     gh.lazySingleton<_i310.AiCardRemoteDatasource>(
       () => _i310.AiCardRemoteDatasourceImpl(gh<_i466.DioClient>()),
+    );
+    gh.lazySingleton<_i401.SubscriptionRepository>(
+      () => _i844.SubscriptionRepositoryImpl(
+        gh<_i273.SubscriptionRemoteDatasource>(),
+      ),
     );
     gh.lazySingleton<_i430.DeckRepository>(
       () => _i581.DeckRepositoryImpl(gh<_i837.DeckLocalDatasource>()),
@@ -94,6 +124,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i573.GetDecks>(
       () => _i573.GetDecks(gh<_i430.DeckRepository>()),
     );
+    gh.factory<_i923.GetDueCards>(
+      () => _i923.GetDueCards(gh<_i430.DeckRepository>()),
+    );
+    gh.factory<_i747.UpdateCard>(
+      () => _i747.UpdateCard(gh<_i430.DeckRepository>()),
+    );
     gh.lazySingleton<_i609.AiGenerateRepository>(
       () => _i790.AiGenerateRepositoryImpl(gh<_i310.AiCardRemoteDatasource>()),
     );
@@ -104,10 +140,29 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i260.DeleteDeck>(),
       ),
     );
+    gh.factory<_i354.StudyBloc>(
+      () => _i354.StudyBloc(gh<_i923.GetDueCards>(), gh<_i747.UpdateCard>()),
+    );
+    gh.factory<_i29.GetSubscriptionStatus>(
+      () => _i29.GetSubscriptionStatus(gh<_i401.SubscriptionRepository>()),
+    );
+    gh.factory<_i511.PurchasePremium>(
+      () => _i511.PurchasePremium(gh<_i401.SubscriptionRepository>()),
+    );
+    gh.factory<_i29.RestorePurchases>(
+      () => _i29.RestorePurchases(gh<_i401.SubscriptionRepository>()),
+    );
     gh.factory<_i251.GenerateCardsFromText>(
       () => _i251.GenerateCardsFromText(
         gh<_i609.AiGenerateRepository>(),
         gh<_i460.SharedPreferences>(),
+      ),
+    );
+    gh.factory<_i145.SubscriptionBloc>(
+      () => _i145.SubscriptionBloc(
+        gh<_i29.GetSubscriptionStatus>(),
+        gh<_i511.PurchasePremium>(),
+        gh<_i29.RestorePurchases>(),
       ),
     );
     gh.factory<_i379.AiGenerateBloc>(

@@ -10,4 +10,6 @@ abstract class DeckRepository {
   Future<Either<Failure, Unit>> deleteDeck(String id);
   Future<Either<Failure, Unit>> addCard(Flashcard card);
   Future<Either<Failure, List<Flashcard>>> getCardsByDeck(String deckId);
+  Future<Either<Failure, Unit>> updateCard(Flashcard card);
+  Future<Either<Failure, List<Flashcard>>> getDueCards(String deckId);
 }
