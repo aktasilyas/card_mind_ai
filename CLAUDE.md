@@ -40,3 +40,20 @@ freezed, json_serializable
 - Feature branch'ler: `feature/deck-management`, `feature/ai-generate`
 - Commit formatı: `feat(deck): add create deck use case`
 - Her feature tamamlandığında PR aç
+
+## Worktree Kullanımı
+WSL ortamında `claude --worktree` çalışmıyor.
+Bunun yerine manuel branch workflow kullan:
+
+  git checkout -b feature/xxx
+  # çalışmayı yap
+  git add .
+  git commit -m "feat(xxx): ..."
+  git checkout main
+  git merge feature/xxx
+  git push
+  
+## Kod İnceleme Kuralı
+Her feature implementation tamamlandığında flutter-reviewer 
+subagent'ını MUTLAKA çalıştır. Sonuçları göster, 
+onay almadan merge etme.

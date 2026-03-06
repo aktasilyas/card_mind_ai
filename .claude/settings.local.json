@@ -3,7 +3,11 @@
     "allow": [
       "Bash(flutter pub:*)",
       "Bash(where.exe flutter:*)",
-      "Bash(cmd.exe:*)"
+      "Bash(cmd.exe:*)",
+      "Bash(git push:*)",
+      "Bash(flutter.bat pub:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(/mnt/c/Users/aktas/flutter_sdk/flutter/bin/flutter.bat test:*)"
     ]
   }
 }
