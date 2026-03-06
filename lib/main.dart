@@ -42,13 +42,16 @@ class CardMindApp extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           getIt<SubscriptionBloc>()..add(const LoadSubscription()),
-      child: MaterialApp.router(
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: MaterialApp.router(
         title: 'CardMind AI',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.dark,
         routerConfig: appRouter,
         debugShowCheckedModeBanner: false,
+      ),
       ),
     );
   }

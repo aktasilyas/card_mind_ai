@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../deck/domain/entities/flashcard.dart';
+import '../../../deck/domain/usecases/add_card.dart';
 import '../bloc/ai_generate_bloc.dart';
 
 class AiGeneratePage extends StatelessWidget {
-  const AiGeneratePage({super.key});
+  const AiGeneratePage({super.key, required this.deckId});
+
+  final String deckId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<AiGenerateBloc>(),
-      child: const _AiGenerateView(),
+      child: _AiGenerateView(deckId: deckId),
     );
   }
 }
 
 class _AiGenerateView extends StatefulWidget {
-  const _AiGenerateView();
+  const _AiGenerateView({required this.deckId});
+
+  final String deckId;
 
   @override
   State<_AiGenerateView> createState() => _AiGenerateViewState();
@@ -25,11 +32,35 @@ class _AiGenerateView extends StatefulWidget {
 
 class _AiGenerateViewState extends State<_AiGenerateView> {
   final _textController = TextEditingController();
+  final _addCard = getIt<AddCard>();
+  bool _saving = false;
 
   @override
   void dispose() {
     _textController.dispose();
     super.dispose();
+  }
+
+  Future<void> _addAllCards(List<Flashcard> cards) async {
+    setState(() => _saving = true);
+
+    int addedCount = 0;
+    for (final card in cards) {
+      final cardWithDeck = card.copyWith(deckId: widget.deckId);
+      final result = await _addCard(cardWithDeck);
+      result.fold((_) {}, (_) => addedCount++);
+    }
+
+    if (!mounted) return;
+    setState(() => _saving = false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$addedCount kart desteye eklendi')),
+    );
+
+    if (addedCount > 0) {
+      context.pop();
+    }
   }
 
   @override
@@ -115,49 +146,79 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
               child: BlocBuilder<AiGenerateBloc, AiGenerateState>(
                 builder: (context, state) {
                   if (state is AiGenerateSuccess) {
-                    return ListView.builder(
-                      itemCount: state.cards.length,
-                      itemBuilder: (context, index) {
-                        final card = state.cards[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Soru:',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: state.cards.length,
+                            itemBuilder: (context, index) {
+                              final card = state.cards[index];
+                              return Card(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Soru:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall
+                                            ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
                                       ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(card.front),
-                                const Divider(),
-                                Text(
-                                  'Cevap:',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
+                                      const SizedBox(height: 4),
+                                      Text(card.front),
+                                      const Divider(),
+                                      Text(
+                                        'Cevap:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall
+                                            ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                            ),
                                       ),
+                                      const SizedBox(height: 4),
+                                      Text(card.back),
+                                    ],
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(card.back),
-                              ],
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: _saving
+                                ? null
+                                : () => _addAllCards(state.cards),
+                            icon: _saving
+                                ? const SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.add),
+                            label: Text(
+                              _saving
+                                  ? 'Ekleniyor...'
+                                  : 'Tümünü Desteye Ekle (${state.cards.length})',
                             ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     );
                   }
                   if (state is AiGenerateLimitReached) {
@@ -173,10 +234,8 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
                           ),
                           const SizedBox(height: 8),
                           ElevatedButton(
-                            onPressed: () {
-                              // TODO: Premium sayfasına yönlendir
-                            },
-                            child: const Text('Premium\'a Geç'),
+                            onPressed: () => context.push('/subscription'),
+                            child: const Text("Premium'a Geç"),
                           ),
                         ],
                       ),

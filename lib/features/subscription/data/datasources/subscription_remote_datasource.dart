@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+import '../../../../core/constants/api_keys.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../domain/entities/subscription_status.dart';
@@ -30,8 +31,13 @@ class SubscriptionRemoteDatasourceImpl implements SubscriptionRemoteDatasource {
     return const SubscriptionStatus(tier: SubscriptionTier.free);
   }
 
+  bool get _isConfigured => ApiKeys.revenueCatApiKey.isNotEmpty;
+
   @override
   Future<SubscriptionStatus> getCustomerInfo() async {
+    if (!_isConfigured) {
+      return const SubscriptionStatus(tier: SubscriptionTier.free);
+    }
     try {
       final customerInfo = await Purchases.getCustomerInfo();
       return _mapCustomerInfo(customerInfo);
@@ -42,6 +48,9 @@ class SubscriptionRemoteDatasourceImpl implements SubscriptionRemoteDatasource {
 
   @override
   Future<SubscriptionStatus> purchasePackage() async {
+    if (!_isConfigured) {
+      throw const PurchaseException(message: 'RevenueCat yapılandırılmamış');
+    }
     try {
       final offerings = await Purchases.getOfferings();
       final currentOffering = offerings.current;
@@ -65,6 +74,9 @@ class SubscriptionRemoteDatasourceImpl implements SubscriptionRemoteDatasource {
 
   @override
   Future<SubscriptionStatus> restorePurchases() async {
+    if (!_isConfigured) {
+      throw const PurchaseException(message: 'RevenueCat yapılandırılmamış');
+    }
     try {
       final customerInfo = await Purchases.restorePurchases();
       return _mapCustomerInfo(customerInfo);

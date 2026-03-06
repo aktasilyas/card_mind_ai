@@ -39,10 +39,13 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/ai-generate/:id',
-      builder: (context, state) => BlocProvider(
-        create: (_) => getIt<AiGenerateBloc>(),
-        child: const AiGeneratePage(),
-      ),
+      builder: (context, state) {
+        final deckId = state.pathParameters['id']!;
+        return BlocProvider(
+          create: (_) => getIt<AiGenerateBloc>(),
+          child: AiGeneratePage(deckId: deckId),
+        );
+      },
     ),
     GoRoute(
       path: '/subscription',

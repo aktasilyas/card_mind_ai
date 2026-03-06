@@ -7,7 +7,8 @@
       "Bash(git push:*)",
       "Bash(flutter.bat pub:*)",
       "Bash(powershell.exe:*)",
-      "Bash(/mnt/c/Users/aktas/flutter_sdk/flutter/bin/flutter.bat test:*)"
+      "Bash(/mnt/c/Users/aktas/flutter_sdk/flutter/bin/flutter.bat test:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
