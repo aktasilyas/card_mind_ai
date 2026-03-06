@@ -4,12 +4,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/di/injection.dart';
 import 'core/theme/app_theme.dart';
+import 'features/deck/data/models/deck_model.dart';
+import 'features/deck/data/models/flashcard_model.dart';
+import 'features/deck/presentation/pages/deck_page.dart';
 
 final _router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const HomePage(),
+      builder: (context, state) => const DeckPage(),
     ),
   ],
 );
@@ -17,7 +20,11 @@ final _router = GoRouter(
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  configureDependencies();
+
+  Hive.registerAdapter(DeckModelAdapter());
+  Hive.registerAdapter(FlashcardModelAdapter());
+
+  await configureDependencies();
 
   runApp(const CardMindApp());
 }
@@ -33,22 +40,6 @@ class CardMindApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('CardMind AI'),
-      ),
-      body: const Center(
-        child: Text('CardMind AI'),
-      ),
     );
   }
 }

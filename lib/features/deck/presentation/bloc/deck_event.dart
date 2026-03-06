@@ -1,17 +1,22 @@
 part of 'deck_bloc.dart';
 
-sealed class DeckEvent {}
-
-final class DeckLoadRequested extends DeckEvent {}
-
-final class DeckCreateRequested extends DeckEvent {
-  final String name;
-
-  DeckCreateRequested({required this.name});
+sealed class DeckEvent {
+  const DeckEvent();
 }
 
-final class DeckDeleteRequested extends DeckEvent {
-  final String id;
+final class LoadDecks extends DeckEvent {
+  const LoadDecks();
+}
 
-  DeckDeleteRequested({required this.id});
+final class CreateDeckEvent extends DeckEvent {
+  const CreateDeckEvent({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
+final class DeleteDeckEvent extends DeckEvent {
+  const DeleteDeckEvent({required this.id});
+
+  final String id;
 }

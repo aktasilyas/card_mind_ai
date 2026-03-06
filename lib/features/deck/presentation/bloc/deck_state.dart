@@ -1,19 +1,25 @@
 part of 'deck_bloc.dart';
 
-sealed class DeckState {}
+sealed class DeckState {
+  const DeckState();
+}
 
-final class DeckInitial extends DeckState {}
+final class DeckInitial extends DeckState {
+  const DeckInitial();
+}
 
-final class DeckLoading extends DeckState {}
+final class DeckLoading extends DeckState {
+  const DeckLoading();
+}
 
 final class DeckLoaded extends DeckState {
-  final List<Deck> decks;
+  const DeckLoaded(this.decks);
 
-  DeckLoaded({required this.decks});
+  final List<Deck> decks;
 }
 
 final class DeckError extends DeckState {
-  final String message;
+  const DeckError(this.message);
 
-  DeckError({required this.message});
+  final String message;
 }
