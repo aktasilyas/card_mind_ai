@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub:*)",
+      "Bash(where.exe flutter:*)",
+      "Bash(cmd.exe:*)"
+    ]
+  }
+}
