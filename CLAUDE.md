@@ -53,6 +53,16 @@ Bunun yerine manuel branch workflow kullan:
   git merge feature/xxx
   git push
   
+## UX Prensipleri
+- Maksimum 2 tap: Her işlem en fazla 2 dokunuşla yapılabilmeli
+- İç içe navigation yasak: Stack derinliği max 2 seviye
+- Bottom navigation her zaman görünür (çalışma modu hariç)
+- FAB ile ana aksiyonlar direkt erişilebilir
+- Dialog yerine bottom sheet tercih et (daha az kesinti)
+- Boş durumlar actionable olmalı ("Henüz kart yok" + direkt "Kart Ekle" butonu)
+- Geri butonu gerektiren akışlardan kaç
+- Her ekran tek bir ana aksiyon içermeli
+
 ## Kod İnceleme Kuralı
 Her feature implementation tamamlandığında flutter-reviewer 
 subagent'ını MUTLAKA çalıştır. Sonuçları göster, 
