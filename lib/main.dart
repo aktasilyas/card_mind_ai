@@ -12,9 +12,11 @@ import 'features/deck/data/models/deck_model.dart';
 import 'features/deck/data/models/flashcard_model.dart';
 import 'features/stats/data/models/study_session_record_model.dart';
 import 'features/stats/data/models/user_stats_model.dart';
+import 'features/settings/presentation/bloc/settings_bloc.dart';
 import 'features/stats/presentation/bloc/stats_bloc.dart';
 import 'features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'shared/services/admob_service.dart';
+import 'shared/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +28,8 @@ Future<void> main() async {
   Hive.registerAdapter(StudySessionRecordModelAdapter());
 
   await configureDependencies();
+
+  await getIt<NotificationService>().init();
 
   await MobileAds.instance.initialize();
   getIt<AdmobService>().loadInterstitialAd();
@@ -53,16 +57,26 @@ class CardMindApp extends StatelessWidget {
         BlocProvider(
           create: (_) => getIt<StatsBloc>()..add(const LoadStats()),
         ),
+        BlocProvider(
+          create: (_) => getIt<SettingsBloc>()..add(const LoadSettings()),
+        ),
       ],
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: MaterialApp.router(
-          title: 'CardMind AI',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.dark,
-          routerConfig: appRouter,
-          debugShowCheckedModeBanner: false,
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, state) {
+            final themeMode = state is SettingsLoaded
+                ? state.settings.themeMode
+                : ThemeMode.dark;
+            return MaterialApp.router(
+              title: 'CardMind AI',
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeMode,
+              routerConfig: appRouter,
+              debugShowCheckedModeBanner: false,
+            );
+          },
         ),
       ),
     );

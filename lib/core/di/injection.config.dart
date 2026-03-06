@@ -47,6 +47,18 @@ import 'package:card_mind_ai/features/deck/domain/usecases/update_card.dart'
     as _i747;
 import 'package:card_mind_ai/features/deck/presentation/bloc/deck_bloc.dart'
     as _i1034;
+import 'package:card_mind_ai/features/settings/data/datasources/settings_local_datasource.dart'
+    as _i219;
+import 'package:card_mind_ai/features/settings/data/repositories/settings_repository_impl.dart'
+    as _i484;
+import 'package:card_mind_ai/features/settings/domain/repositories/settings_repository.dart'
+    as _i150;
+import 'package:card_mind_ai/features/settings/domain/usecases/get_settings.dart'
+    as _i441;
+import 'package:card_mind_ai/features/settings/domain/usecases/update_settings.dart'
+    as _i67;
+import 'package:card_mind_ai/features/settings/presentation/bloc/settings_bloc.dart'
+    as _i115;
 import 'package:card_mind_ai/features/stats/data/datasources/stats_local_datasource.dart'
     as _i522;
 import 'package:card_mind_ai/features/stats/data/models/study_session_record_model.dart'
@@ -82,6 +94,8 @@ import 'package:card_mind_ai/features/subscription/domain/usecases/restore_purch
 import 'package:card_mind_ai/features/subscription/presentation/bloc/subscription_bloc.dart'
     as _i145;
 import 'package:card_mind_ai/shared/services/admob_service.dart' as _i573;
+import 'package:card_mind_ai/shared/services/notification_service.dart'
+    as _i879;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:hive/hive.dart' as _i979;
 import 'package:injectable/injectable.dart' as _i526;
@@ -117,6 +131,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i466.DioClient>(() => _i466.DioClient());
     gh.singleton<_i573.AdmobService>(() => _i573.AdmobService());
+    gh.lazySingleton<_i879.NotificationService>(
+      () => _i879.NotificationService(),
+    );
     gh.lazySingleton<_i522.StatsLocalDatasource>(
       () => _i522.StatsLocalDatasourceImpl(
         gh<_i979.Box<_i435.UserStatsModel>>(),
@@ -137,6 +154,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i613.StatsRepository>(
       () => _i870.StatsRepositoryImpl(gh<_i522.StatsLocalDatasource>()),
+    );
+    gh.lazySingleton<_i219.SettingsLocalDatasource>(
+      () => _i219.SettingsLocalDatasourceImpl(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i401.SubscriptionRepository>(
       () => _i844.SubscriptionRepositoryImpl(
@@ -183,6 +203,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i609.AiGenerateRepository>(
       () => _i790.AiGenerateRepositoryImpl(gh<_i310.AiCardRemoteDatasource>()),
     );
+    gh.lazySingleton<_i150.SettingsRepository>(
+      () => _i484.SettingsRepositoryImpl(gh<_i219.SettingsLocalDatasource>()),
+    );
+    gh.factory<_i441.GetSettings>(
+      () => _i441.GetSettings(gh<_i150.SettingsRepository>()),
+    );
+    gh.factory<_i67.UpdateSettings>(
+      () => _i67.UpdateSettings(gh<_i150.SettingsRepository>()),
+    );
     gh.factory<_i1034.DeckBloc>(
       () => _i1034.DeckBloc(
         gh<_i573.GetDecks>(),
@@ -210,6 +239,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i251.GenerateCardsFromText(
         gh<_i609.AiGenerateRepository>(),
         gh<_i460.SharedPreferences>(),
+      ),
+    );
+    gh.factory<_i115.SettingsBloc>(
+      () => _i115.SettingsBloc(
+        gh<_i441.GetSettings>(),
+        gh<_i67.UpdateSettings>(),
       ),
     );
     gh.factory<_i145.SubscriptionBloc>(
