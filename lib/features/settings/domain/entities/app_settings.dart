@@ -6,6 +6,7 @@ class AppSettings {
   final int notificationHour;
   final int notificationMinute;
   final ThemeMode themeMode;
+  final String locale;
 
   const AppSettings({
     this.dailyGoal = 20,
@@ -13,6 +14,7 @@ class AppSettings {
     this.notificationHour = 9,
     this.notificationMinute = 0,
     this.themeMode = ThemeMode.dark,
+    this.locale = 'tr',
   });
 
   AppSettings copyWith({
@@ -21,6 +23,7 @@ class AppSettings {
     int? notificationHour,
     int? notificationMinute,
     ThemeMode? themeMode,
+    String? locale,
   }) {
     return AppSettings(
       dailyGoal: dailyGoal ?? this.dailyGoal,
@@ -28,6 +31,7 @@ class AppSettings {
       notificationHour: notificationHour ?? this.notificationHour,
       notificationMinute: notificationMinute ?? this.notificationMinute,
       themeMode: themeMode ?? this.themeMode,
+      locale: locale ?? this.locale,
     );
   }
 }

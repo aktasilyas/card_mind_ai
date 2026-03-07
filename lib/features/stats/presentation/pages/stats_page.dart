@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/study_session_record.dart';
 import '../bloc/stats_bloc.dart';
 
@@ -10,8 +11,9 @@ class StatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Istatistikler')),
+      appBar: AppBar(title: Text(l10n.statistics)),
       body: BlocBuilder<StatsBloc, StatsState>(
         builder: (context, state) {
           return switch (state) {
@@ -62,15 +64,16 @@ class _DailyGoalRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final progress = goal == 0 ? 0.0 : (current / goal).clamp(0.0, 1.0);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const Text(
-              'Gunluk Hedef',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              l10n.dailyGoal,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -107,7 +110,7 @@ class _DailyGoalRing extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '/ $goal kart',
+                        l10n.goalCards(goal),
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context)
@@ -135,8 +138,9 @@ class _WeeklyChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
-    final dayLabels = ['Pzt', 'Sal', 'Car', 'Per', 'Cum', 'Cmt', 'Paz'];
+    final dayLabels = [l10n.mon, l10n.tue, l10n.wed, l10n.thu, l10n.fri, l10n.sat, l10n.sun];
     final dailyXp = List.filled(7, 0);
 
     for (final record in records) {
@@ -155,9 +159,9 @@ class _WeeklyChart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Haftalik XP',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              l10n.weeklyXp,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -239,6 +243,7 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -249,25 +254,25 @@ class _StatsGrid extends StatelessWidget {
       children: [
         _StatCard(
           icon: Icons.bolt,
-          label: 'Toplam XP',
+          label: l10n.totalXp,
           value: '$totalXp',
           color: const Color(0xFFFF9600),
         ),
         _StatCard(
           icon: Icons.local_fire_department,
-          label: 'Seri',
-          value: '$streak gun',
+          label: l10n.streak,
+          value: l10n.streakDays(streak),
           color: const Color(0xFFFF9600),
         ),
         _StatCard(
           icon: Icons.gps_fixed,
-          label: 'Basari',
+          label: l10n.achievement,
           value: '${accuracy.toStringAsFixed(0)}%',
           color: const Color(0xFF58CC02),
         ),
         _StatCard(
           icon: Icons.style,
-          label: 'Toplam Kart',
+          label: l10n.totalCardsStudied,
           value: '$totalCards',
           color: const Color(0xFF1CB0F6),
         ),
@@ -330,13 +335,14 @@ class _AchievementsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (achievements.isEmpty) {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Center(
             child: Text(
-              'Henuz rozet kazanilmadi.\nCalismaya devam et!',
+              l10n.noBadgesYet,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Theme.of(context)
@@ -356,9 +362,9 @@ class _AchievementsGrid extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Rozetler',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            Text(
+              l10n.badges,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
             Wrap(

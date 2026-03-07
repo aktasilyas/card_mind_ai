@@ -1,0 +1,405 @@
+{
+  "@@locale": "tr",
+
+  "appTitle": "CardMind AI",
+  "@appTitle": {},
+
+  "navHome": "Ana Sayfa",
+  "@navHome": {},
+
+  "navStats": "İstatistik",
+  "@navStats": {},
+
+  "navSettings": "Ayarlar",
+  "@navSettings": {},
+
+  "noDecksYet": "Henüz deste yok,\nilk desteni oluştur!",
+  "@noDecksYet": {},
+
+  "createDeck": "Deste Oluştur",
+  "@createDeck": {},
+
+  "newDeck": "Yeni Deste Oluştur",
+  "@newDeck": {},
+
+  "deckName": "İsim",
+  "@deckName": {},
+
+  "deckDescription": "Açıklama",
+  "@deckDescription": {},
+
+  "create": "Oluştur",
+  "@create": {},
+
+  "retry": "Tekrar Dene",
+  "@retry": {},
+
+  "cardCount": "{count} kart",
+  "@cardCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "startStudy": "Çalışmaya Başla",
+  "@startStudy": {},
+
+  "generateWithAi": "AI ile Üret",
+  "@generateWithAi": {},
+
+  "noCardsYet": "Henüz kart yok.\nAI ile kart üretmeyi deneyin!",
+  "@noCardsYet": {},
+
+  "noCardsToStudy": "Bugün çalışılacak kart yok!",
+  "@noCardsToStudy": {},
+
+  "goBack": "Geri Dön",
+  "@goBack": {},
+
+  "greatJob": "Harika İş!",
+  "@greatJob": {},
+
+  "totalCards": "Toplam Kart",
+  "@totalCards": {},
+
+  "averageScore": "Ortalama Puan",
+  "@averageScore": {},
+
+  "goToHome": "Ana Sayfaya Dön",
+  "@goToHome": {},
+
+  "tapCard": "Karta dokun",
+  "@tapCard": {},
+
+  "ratingWorst": "Hiç",
+  "@ratingWorst": {},
+
+  "ratingHard": "Zor",
+  "@ratingHard": {},
+
+  "ratingStruggled": "Zorlandım",
+  "@ratingStruggled": {},
+
+  "ratingMedium": "Orta",
+  "@ratingMedium": {},
+
+  "ratingEasy": "Kolay",
+  "@ratingEasy": {},
+
+  "ratingPerfect": "Mükemmel",
+  "@ratingPerfect": {},
+
+  "question": "SORU",
+  "@question": {},
+
+  "answer": "CEVAP",
+  "@answer": {},
+
+  "tapToFlip": "Çevirmek için dokun",
+  "@tapToFlip": {},
+
+  "statistics": "İstatistikler",
+  "@statistics": {},
+
+  "dailyGoal": "Günlük Hedef",
+  "@dailyGoal": {},
+
+  "weeklyXp": "Haftalık XP",
+  "@weeklyXp": {},
+
+  "totalXp": "Toplam XP",
+  "@totalXp": {},
+
+  "streak": "Seri",
+  "@streak": {},
+
+  "streakDays": "{count} gün",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "achievement": "Başarı",
+  "@achievement": {},
+
+  "totalCardsStudied": "Toplam Kart",
+  "@totalCardsStudied": {},
+
+  "badges": "Rozetler",
+  "@badges": {},
+
+  "noBadgesYet": "Henüz rozet kazanılmadı.\nÇalışmaya devam et!",
+  "@noBadgesYet": {},
+
+  "mon": "Pzt",
+  "@mon": {},
+
+  "tue": "Sal",
+  "@tue": {},
+
+  "wed": "Çar",
+  "@wed": {},
+
+  "thu": "Per",
+  "@thu": {},
+
+  "fri": "Cum",
+  "@fri": {},
+
+  "sat": "Cmt",
+  "@sat": {},
+
+  "sun": "Paz",
+  "@sun": {},
+
+  "settings": "Ayarlar",
+  "@settings": {},
+
+  "study": "Çalışma",
+  "@study": {},
+
+  "notifications": "Bildirimler",
+  "@notifications": {},
+
+  "appearance": "Görünüm",
+  "@appearance": {},
+
+  "subscription": "Abonelik",
+  "@subscription": {},
+
+  "dailyGoalSetting": "Günlük Hedef",
+  "@dailyGoalSetting": {},
+
+  "cardsPerDay": "kart/gün",
+  "@cardsPerDay": {},
+
+  "dailyReminder": "Günlük Hatırlatma",
+  "@dailyReminder": {},
+
+  "reminderOn": "Açık — {time}",
+  "@reminderOn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "reminderOff": "Kapalı",
+  "@reminderOff": {},
+
+  "theme": "Tema",
+  "@theme": {},
+
+  "themeLight": "Açık",
+  "@themeLight": {},
+
+  "themeDark": "Koyu",
+  "@themeDark": {},
+
+  "themeSystem": "Sistem",
+  "@themeSystem": {},
+
+  "cardMindPremium": "CardMind Premium",
+  "@cardMindPremium": {},
+
+  "premiumActive": "Aktif — Tüm özellikler açık",
+  "@premiumActive": {},
+
+  "premiumDescription": "PDF, sesli giriş ve daha fazlası",
+  "@premiumDescription": {},
+
+  "upgradeToPremium": "Premium'a Geç",
+  "@upgradeToPremium": {},
+
+  "aiCardGenerator": "AI Kart Üretici",
+  "@aiCardGenerator": {},
+
+  "uploadFromFile": "Dosyadan Yükle",
+  "@uploadFromFile": {},
+
+  "listening": "Dinleniyor...",
+  "@listening": {},
+
+  "enterTextHint": "Konuyu veya metni buraya yazın...",
+  "@enterTextHint": {},
+
+  "cardCountLabel": "Kart Sayısı",
+  "@cardCountLabel": {},
+
+  "generateCards": "Kart Üret",
+  "@generateCards": {},
+
+  "cardsGenerated": "{count} kart üretildi",
+  "@cardsGenerated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "saveAll": "Tümünü Kaydet ({count})",
+  "@saveAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "dailyLimitReached": "Günlük Limitinize Ulaştınız",
+  "@dailyLimitReached": {},
+
+  "premiumUnlimited": "Premium ile sınırsız kart üretin ve tüm özelliklerin kilidini açın.",
+  "@premiumUnlimited": {},
+
+  "micPermissionRequired": "Mikrofon izni gerekli",
+  "@micPermissionRequired": {},
+
+  "cardsAddedToDeck": "{count} kart desteye eklendi",
+  "@cardsAddedToDeck": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "premium": "Premium",
+  "@premium": {},
+
+  "premiumActiveTitle": "Premium Aktif",
+  "@premiumActiveTitle": {},
+
+  "allFeaturesAccess": "Tüm özelliklere erişiminiz var.",
+  "@allFeaturesAccess": {},
+
+  "feature": "Özellik",
+  "@feature": {},
+
+  "free": "Free",
+  "@free": {},
+
+  "ads": "Reklamlar",
+  "@ads": {},
+
+  "adsYes": "Var",
+  "@adsYes": {},
+
+  "adsNo": "Yok",
+  "@adsNo": {},
+
+  "aiCardGeneration": "AI Kart Üretimi",
+  "@aiCardGeneration": {},
+
+  "fivePerDay": "5/gün",
+  "@fivePerDay": {},
+
+  "unlimited": "Sınırsız",
+  "@unlimited": {},
+
+  "prioritySupport": "Öncelikli Destek",
+  "@prioritySupport": {},
+
+  "premiumPlans": "Premium Planlar",
+  "@premiumPlans": {},
+
+  "monthly": "Aylık",
+  "@monthly": {},
+
+  "yearly": "Yıllık",
+  "@yearly": {},
+
+  "restorePurchases": "Satın Alımları Geri Yükle",
+  "@restorePurchases": {},
+
+  "premiumFeatureOnly": "Bu özellik Premium kullanıcılara özeldir.",
+  "@premiumFeatureOnly": {},
+
+  "start": "BAŞLA",
+  "@start": {},
+
+  "next": "İLERİ",
+  "@next": {},
+
+  "smartStudy": "Akıllıca çalış, daha çok öğren",
+  "@smartStudy": {},
+
+  "aiPoweredLearning": "Yapay zeka destekli öğrenme",
+  "@aiPoweredLearning": {},
+
+  "whatWeOffer": "Neler sunuyoruz?",
+  "@whatWeOffer": {},
+
+  "powerfulTools": "Öğrenmeni hızlandıran güçlü araçlar",
+  "@powerfulTools": {},
+
+  "aiCardGenerationFeature": "AI Kart Üretimi",
+  "@aiCardGenerationFeature": {},
+
+  "aiCardGenerationDesc": "Yapay zeka ile anında flashcard oluştur",
+  "@aiCardGenerationDesc": {},
+
+  "smartRepetition": "Akıllı Tekrar",
+  "@smartRepetition": {},
+
+  "smartRepetitionDesc": "SM-2 algoritması ile en verimli çalışma",
+  "@smartRepetitionDesc": {},
+
+  "gamification": "Gamification",
+  "@gamification": {},
+
+  "gamificationDesc": "XP, streak ve başarımlarla motivasyon",
+  "@gamificationDesc": {},
+
+  "chooseDailyGoal": "Günlük hedefinizi seçin",
+  "@chooseDailyGoal": {},
+
+  "howManyCards": "Her gün kaç kart çalışmak istiyorsunuz?",
+  "@howManyCards": {},
+
+  "greatStart": "Günde {count} kart ile harika bir başlangıç yapabilirsin!",
+  "@greatStart": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "cardsPerDayUnit": "kart/gün",
+  "@cardsPerDayUnit": {},
+
+  "language": "Dil",
+  "@language": {},
+
+  "languageTurkish": "Türkçe",
+  "@languageTurkish": {},
+
+  "languageEnglish": "English",
+  "@languageEnglish": {},
+
+  "levelLabel": "Seviye {level}",
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+
+  "goalCards": "/ {goal} kart",
+  "@goalCards": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  }
+}

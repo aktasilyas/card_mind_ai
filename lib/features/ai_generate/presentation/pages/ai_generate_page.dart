@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/duo_button.dart';
 import '../../../deck/domain/entities/flashcard.dart';
 import '../../../deck/domain/usecases/add_card.dart';
@@ -104,8 +105,9 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
 
     final initFailure = initResult.fold<Failure?>((f) => f, (_) => null);
     if (initFailure != null) {
+      final l10n = AppLocalizations.of(context)!;
       final message = initFailure is PermissionFailure
-          ? 'Mikrofon izni gerekli'
+          ? l10n.micPermissionRequired
           : initFailure.message;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -171,9 +173,10 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     if (!mounted) return;
     setState(() => _saving = false);
 
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$addedCount kart desteye eklendi'),
+        content: Text(l10n.cardsAddedToDeck(addedCount)),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -188,11 +191,12 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'AI Kart Üretici',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.aiCardGenerator,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -236,37 +240,24 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // --- File Upload Button ---
-                _buildFileUploadButton(),
+                _buildFileUploadButton(l10n),
                 const SizedBox(height: 12),
-
-                // --- Text Input ---
-                _buildTextInput(context),
+                _buildTextInput(context, l10n),
                 const SizedBox(height: 20),
-
-                // --- Card Count Chips ---
-                _buildCardCountChips(context, state),
+                _buildCardCountChips(context, state, l10n),
                 const SizedBox(height: 20),
-
-                // --- Generate Button ---
-                _buildGenerateButton(context, state),
+                _buildGenerateButton(context, state, l10n),
                 const SizedBox(height: 20),
-
-                // --- Loading State ---
                 if (state is AiGenerateLoading) _buildShimmerCards(),
-
-                // --- Success State ---
                 if (state is AiGenerateSuccess && _localCards.isNotEmpty) ...[
-                  _buildResultBadge(),
+                  _buildResultBadge(l10n),
                   const SizedBox(height: 12),
-                  _buildResultCards(),
+                  _buildResultCards(l10n),
                   const SizedBox(height: 16),
-                  _buildSaveButton(),
+                  _buildSaveButton(l10n),
                   const SizedBox(height: 24),
                 ],
-
-                // --- Limit Reached State ---
-                if (state is AiGenerateLimitReached) _buildLimitBanner(context),
+                if (state is AiGenerateLimitReached) _buildLimitBanner(context, l10n),
               ],
             ),
           );
@@ -275,9 +266,6 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // File Pick & Extract
-  // ──────────────────────────────────────────────
   Future<void> _pickAndExtractFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -322,13 +310,9 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // File Upload Button
-  // ──────────────────────────────────────────────
-  Widget _buildFileUploadButton() {
-    // TODO: Premium kontrolü eklenecek (SubscriptionBloc ile)
+  Widget _buildFileUploadButton(AppLocalizations l10n) {
     return DuoButton(
-      text: 'Dosyadan Yükle',
+      text: l10n.uploadFromFile,
       icon: Icons.upload_file_rounded,
       variant: DuoButtonVariant.secondary,
       isLoading: _extractingFile,
@@ -336,10 +320,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Text Input
-  // ──────────────────────────────────────────────
-  Widget _buildTextInput(BuildContext context) {
+  Widget _buildTextInput(BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
     return TextField(
       controller: _textController,
@@ -349,7 +330,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
       readOnly: _isListening,
       style: theme.textTheme.bodyLarge,
       decoration: InputDecoration(
-        hintText: _isListening ? 'Dinleniyor...' : 'Konuyu veya metni buraya yazın...',
+        hintText: _isListening ? l10n.listening : l10n.enterTextHint,
         hintStyle: theme.textTheme.bodyLarge?.copyWith(
           color: _isListening
               ? AppTheme.duoRed.withValues(alpha: 0.7)
@@ -400,16 +381,13 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Card Count Chips
-  // ──────────────────────────────────────────────
-  Widget _buildCardCountChips(BuildContext context, AiGenerateState state) {
+  Widget _buildCardCountChips(BuildContext context, AiGenerateState state, AppLocalizations l10n) {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Kart Sayısı',
+          l10n.cardCountLabel,
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -466,13 +444,10 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Generate Button
-  // ──────────────────────────────────────────────
-  Widget _buildGenerateButton(BuildContext context, AiGenerateState state) {
+  Widget _buildGenerateButton(BuildContext context, AiGenerateState state, AppLocalizations l10n) {
     final bool isLoading = state is AiGenerateLoading;
     return DuoButton(
-      text: 'Kart Üret',
+      text: l10n.generateCards,
       icon: Icons.auto_awesome,
       isLoading: isLoading,
       onPressed: _hasText && !isLoading
@@ -484,9 +459,6 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Shimmer / Loading Cards
-  // ──────────────────────────────────────────────
   Widget _buildShimmerCards() {
     return Column(
       children: List.generate(
@@ -499,10 +471,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Result Badge
-  // ──────────────────────────────────────────────
-  Widget _buildResultBadge() {
+  Widget _buildResultBadge(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
@@ -519,7 +488,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
           ),
           const SizedBox(width: 6),
           Text(
-            '${_localCards.length} kart üretildi',
+            l10n.cardsGenerated(_localCards.length),
             style: const TextStyle(
               color: AppTheme.duoGreen,
               fontWeight: FontWeight.bold,
@@ -531,10 +500,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Result Cards (Flip Preview)
-  // ──────────────────────────────────────────────
-  Widget _buildResultCards() {
+  Widget _buildResultCards(AppLocalizations l10n) {
     return Column(
       children: List.generate(_localCards.length, (index) {
         return Padding(
@@ -549,12 +515,9 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Save All Button
-  // ──────────────────────────────────────────────
-  Widget _buildSaveButton() {
+  Widget _buildSaveButton(AppLocalizations l10n) {
     return DuoButton(
-      text: 'Tümünü Kaydet (${_localCards.length})',
+      text: l10n.saveAll(_localCards.length),
       icon: Icons.save_rounded,
       variant: DuoButtonVariant.secondary,
       isLoading: _saving,
@@ -562,10 +525,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
     );
   }
 
-  // ──────────────────────────────────────────────
-  // Limit Reached Banner
-  // ──────────────────────────────────────────────
-  Widget _buildLimitBanner(BuildContext context) {
+  Widget _buildLimitBanner(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: AppTheme.cardGradient,
@@ -585,9 +545,9 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Günlük Limitinize Ulaştınız',
-            style: TextStyle(
+          Text(
+            l10n.dailyLimitReached,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -596,7 +556,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Premium ile sınırsız kart üretin ve tüm özelliklerin kilidini açın.',
+            l10n.premiumUnlimited,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
@@ -605,7 +565,7 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
           ),
           const SizedBox(height: 20),
           DuoButton(
-            text: "Premium'a Geç",
+            text: l10n.upgradeToPremium,
             icon: Icons.workspace_premium_rounded,
             variant: DuoButtonVariant.secondary,
             onPressed: () => context.push('/subscription'),
@@ -616,9 +576,6 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
   }
 }
 
-// ════════════════════════════════════════════════
-// Pulse Mic Button Widget
-// ════════════════════════════════════════════════
 class _PulseMicButton extends StatefulWidget {
   const _PulseMicButton({
     required this.isListening,
@@ -729,9 +686,6 @@ class _PulseMicButtonState extends State<_PulseMicButton>
   }
 }
 
-// ════════════════════════════════════════════════
-// Shimmer Card Widget
-// ════════════════════════════════════════════════
 class _ShimmerCard extends StatefulWidget {
   const _ShimmerCard({required this.delay});
 
@@ -827,9 +781,6 @@ class _ShimmerCardState extends State<_ShimmerCard>
   }
 }
 
-// ════════════════════════════════════════════════
-// Flip Card Widget
-// ════════════════════════════════════════════════
 class _FlipCard extends StatefulWidget {
   const _FlipCard({
     required this.card,
@@ -881,6 +832,7 @@ class _FlipCardState extends State<_FlipCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: _toggleFlip,
@@ -896,11 +848,11 @@ class _FlipCardState extends State<_FlipCard>
               ..setEntry(3, 2, 0.001)
               ..rotateX(angle),
             child: isFront
-                ? _buildFrontSide(theme)
+                ? _buildFrontSide(theme, l10n)
                 : Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.identity()..rotateX(math.pi),
-                    child: _buildBackSide(theme),
+                    child: _buildBackSide(theme, l10n),
                   ),
           );
         },
@@ -908,7 +860,7 @@ class _FlipCardState extends State<_FlipCard>
     );
   }
 
-  Widget _buildFrontSide(ThemeData theme) {
+  Widget _buildFrontSide(ThemeData theme, AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(minHeight: 100),
@@ -936,9 +888,9 @@ class _FlipCardState extends State<_FlipCard>
                       color: AppTheme.duoGreen.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
-                      'SORU',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.question,
+                      style: const TextStyle(
                         color: AppTheme.duoGreen,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -948,7 +900,7 @@ class _FlipCardState extends State<_FlipCard>
                   ),
                   const Spacer(),
                   Text(
-                    'Çevirmek için dokun',
+                    l10n.tapToFlip,
                     style: TextStyle(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                       fontSize: 11,
@@ -988,7 +940,7 @@ class _FlipCardState extends State<_FlipCard>
     );
   }
 
-  Widget _buildBackSide(ThemeData theme) {
+  Widget _buildBackSide(ThemeData theme, AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(minHeight: 100),
@@ -1016,9 +968,9 @@ class _FlipCardState extends State<_FlipCard>
                       color: AppTheme.duoBlue.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
-                      'CEVAP',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.answer,
+                      style: const TextStyle(
                         color: AppTheme.duoBlue,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -1028,7 +980,7 @@ class _FlipCardState extends State<_FlipCard>
                   ),
                   const Spacer(),
                   Text(
-                    'Çevirmek için dokun',
+                    l10n.tapToFlip,
                     style: TextStyle(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
                       fontSize: 11,

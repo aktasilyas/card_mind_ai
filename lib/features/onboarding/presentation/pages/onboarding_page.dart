@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/duo_button.dart';
 import '../../../settings/presentation/bloc/settings_bloc.dart';
 
@@ -52,6 +53,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -81,9 +83,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: _currentPage < _totalPages - 1
-                  ? _NavigationRow(onNext: _nextPage)
+                  ? DuoButton(
+                      text: l10n.next,
+                      icon: Icons.arrow_forward_rounded,
+                      onPressed: _nextPage,
+                    )
                   : DuoButton(
-                      text: 'BAŞLA',
+                      text: l10n.start,
                       icon: Icons.rocket_launch_rounded,
                       onPressed: _onComplete,
                     ),
@@ -96,9 +102,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 }
 
-// ════════════════════════════════════════════════
-// Sayfa 1 — Karsilama
-// ════════════════════════════════════════════════
 class _WelcomePage extends StatefulWidget {
   const _WelcomePage();
 
@@ -141,6 +144,7 @@ class _WelcomePageState extends State<_WelcomePage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -168,7 +172,7 @@ class _WelcomePageState extends State<_WelcomePage>
             child: Column(
               children: [
                 Text(
-                  'CardMind AI',
+                  l10n.appTitle,
                   style: theme.textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.w900,
                     letterSpacing: -0.5,
@@ -183,7 +187,7 @@ class _WelcomePageState extends State<_WelcomePage>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Akıllıca çalış, daha çok öğren',
+                  l10n.smartStudy,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.6)
@@ -205,18 +209,18 @@ class _WelcomePageState extends State<_WelcomePage>
                       color: AppTheme.duoGreen.withValues(alpha: 0.25),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.auto_awesome,
                         color: AppTheme.duoOrange,
                         size: 16,
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
-                        'Yapay zeka destekli öğrenme',
-                        style: TextStyle(
+                        l10n.aiPoweredLearning,
+                        style: const TextStyle(
                           color: AppTheme.duoGreen,
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
@@ -234,15 +238,13 @@ class _WelcomePageState extends State<_WelcomePage>
   }
 }
 
-// ════════════════════════════════════════════════
-// Sayfa 2 — Ozellikler
-// ════════════════════════════════════════════════
 class _FeaturesPage extends StatelessWidget {
   const _FeaturesPage();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -251,41 +253,41 @@ class _FeaturesPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Neler sunuyoruz?',
+            l10n.whatWeOffer,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w900,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Öğrenmeni hızlandıran güçlü araçlar',
+            l10n.powerfulTools,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 36),
-          const _FeatureCard(
+          _FeatureCard(
             icon: Icons.auto_awesome,
             color: AppTheme.duoBlue,
-            title: 'AI Kart Üretimi',
-            description: 'Yapay zeka ile anında flashcard oluştur',
+            title: l10n.aiCardGenerationFeature,
+            description: l10n.aiCardGenerationDesc,
             delay: 0,
           ),
           const SizedBox(height: 16),
-          const _FeatureCard(
+          _FeatureCard(
             icon: Icons.psychology_rounded,
             color: AppTheme.duoGreen,
-            title: 'Akıllı Tekrar',
-            description: 'SM-2 algoritması ile en verimli çalışma',
+            title: l10n.smartRepetition,
+            description: l10n.smartRepetitionDesc,
             delay: 100,
           ),
           const SizedBox(height: 16),
-          const _FeatureCard(
+          _FeatureCard(
             icon: Icons.emoji_events_rounded,
             color: AppTheme.duoOrange,
-            title: 'Gamification',
-            description: 'XP, streak ve başarımlarla motivasyon',
+            title: l10n.gamification,
+            description: l10n.gamificationDesc,
             delay: 200,
           ),
         ],
@@ -409,9 +411,6 @@ class _FeatureCardState extends State<_FeatureCard>
   }
 }
 
-// ════════════════════════════════════════════════
-// Sayfa 3 — Gunluk Hedef
-// ════════════════════════════════════════════════
 class _GoalPage extends StatelessWidget {
   const _GoalPage({
     required this.selectedGoal,
@@ -426,6 +425,7 @@ class _GoalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -443,7 +443,7 @@ class _GoalPage extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Text(
-            'Günlük hedefinizi seçin',
+            l10n.chooseDailyGoal,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w900,
             ),
@@ -451,7 +451,7 @@ class _GoalPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Her gün kaç kart çalışmak istiyorsunuz?',
+            l10n.howManyCards,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
               fontWeight: FontWeight.w600,
@@ -491,7 +491,7 @@ class _GoalPage extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Günde $selectedGoal kart ile harika bir başlangıç yapabilirsin!',
+                    l10n.greatStart(selectedGoal),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
@@ -521,6 +521,7 @@ class _GoalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: onTap,
@@ -574,7 +575,7 @@ class _GoalChip extends StatelessWidget {
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
-              child: const Text('kart/gün'),
+              child: Text(l10n.cardsPerDayUnit),
             ),
           ],
         ),
@@ -583,9 +584,6 @@ class _GoalChip extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════
-// Dot Indicator
-// ════════════════════════════════════════════════
 class _DotIndicator extends StatelessWidget {
   const _DotIndicator({
     required this.totalPages,
@@ -622,27 +620,6 @@ class _DotIndicator extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════
-// Navigation Row (Ileri butonu)
-// ════════════════════════════════════════════════
-class _NavigationRow extends StatelessWidget {
-  const _NavigationRow({required this.onNext});
-
-  final VoidCallback onNext;
-
-  @override
-  Widget build(BuildContext context) {
-    return DuoButton(
-      text: 'İLERİ',
-      icon: Icons.arrow_forward_rounded,
-      onPressed: onNext,
-    );
-  }
-}
-
-// ════════════════════════════════════════════════
-// Gradient Icon Circle — Paylasilabilir widget
-// ════════════════════════════════════════════════
 class _GradientIconCircle extends StatelessWidget {
   const _GradientIconCircle({
     required this.size,

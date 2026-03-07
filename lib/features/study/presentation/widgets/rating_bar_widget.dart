@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class RatingBarWidget extends StatelessWidget {
   const RatingBarWidget({super.key, required this.onRatingSelected});
 
   final void Function(int quality) onRatingSelected;
-
-  static const _labels = ['Hiç', 'Zor', 'Zorlandım', 'Orta', 'Kolay', 'Mükemmel'];
 
   static const _colors = [
     Color(0xFFE53935),
@@ -18,6 +18,15 @@ class RatingBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final labels = [
+      l10n.ratingWorst,
+      l10n.ratingHard,
+      l10n.ratingStruggled,
+      l10n.ratingMedium,
+      l10n.ratingEasy,
+      l10n.ratingPerfect,
+    ];
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -25,7 +34,7 @@ class RatingBarWidget extends StatelessWidget {
       children: List.generate(6, (index) {
         return _RatingButton(
           quality: index,
-          label: _labels[index],
+          label: labels[index],
           color: _colors[index],
           onTap: () => onRatingSelected(index),
         );

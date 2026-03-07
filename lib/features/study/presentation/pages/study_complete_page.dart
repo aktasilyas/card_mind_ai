@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/duo_button.dart';
 
 class StudyCompletePage extends StatefulWidget {
@@ -52,6 +53,7 @@ class _StudyCompletePageState extends State<StudyCompletePage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Stack(
         children: [
@@ -67,9 +69,9 @@ class _StudyCompletePageState extends State<StudyCompletePage>
                     color: Colors.amber,
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Harika Is!',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  Text(
+                    l10n.greatJob,
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   AnimatedBuilder(
@@ -94,18 +96,18 @@ class _StudyCompletePageState extends State<StudyCompletePage>
                   const SizedBox(height: 24),
                   _StatRow(
                     icon: Icons.style,
-                    label: 'Toplam Kart',
+                    label: l10n.totalCards,
                     value: '${widget.totalCards}',
                   ),
                   const SizedBox(height: 12),
                   _StatRow(
                     icon: Icons.star,
-                    label: 'Ortalama Puan',
+                    label: l10n.averageScore,
                     value: widget.averageRating.toStringAsFixed(1),
                   ),
                   const SizedBox(height: 40),
                   DuoButton(
-                    text: 'Ana Sayfaya Don',
+                    text: l10n.goToHome,
                     icon: Icons.home,
                     onPressed: () => context.go('/'),
                   ),

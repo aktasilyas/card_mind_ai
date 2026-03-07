@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/subscription_status.dart';
 import '../bloc/subscription_bloc.dart';
 
@@ -9,8 +10,9 @@ class SubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Premium')),
+      appBar: AppBar(title: Text(l10n.premium)),
       body: BlocConsumer<SubscriptionBloc, SubscriptionState>(
         listener: (context, state) {
           if (state is SubscriptionError) {
@@ -53,20 +55,21 @@ class _PremiumActiveCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       color: Colors.amber.shade50,
-      child: const Padding(
-        padding: EdgeInsets.all(24),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            Icon(Icons.workspace_premium, size: 64, color: Colors.amber),
-            SizedBox(height: 16),
+            const Icon(Icons.workspace_premium, size: 64, color: Colors.amber),
+            const SizedBox(height: 16),
             Text(
-              'Premium Aktif',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              l10n.premiumActiveTitle,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            Text('Tüm özelliklere erişiminiz var.'),
+            const SizedBox(height: 8),
+            Text(l10n.allFeaturesAccess),
           ],
         ),
       ),
@@ -79,27 +82,28 @@ class _ComparisonTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return DataTable(
-      columns: const [
-        DataColumn(label: Text('Özellik')),
-        DataColumn(label: Text('Free')),
-        DataColumn(label: Text('Premium')),
+      columns: [
+        DataColumn(label: Text(l10n.feature)),
+        DataColumn(label: Text(l10n.free)),
+        DataColumn(label: Text(l10n.premium)),
       ],
-      rows: const [
+      rows: [
         DataRow(cells: [
-          DataCell(Text('Reklamlar')),
-          DataCell(Text('Var')),
-          DataCell(Text('Yok')),
+          DataCell(Text(l10n.ads)),
+          DataCell(Text(l10n.adsYes)),
+          DataCell(Text(l10n.adsNo)),
         ]),
         DataRow(cells: [
-          DataCell(Text('AI Kart Üretimi')),
-          DataCell(Text('5/gün')),
-          DataCell(Text('Sınırsız')),
+          DataCell(Text(l10n.aiCardGeneration)),
+          DataCell(Text(l10n.fivePerDay)),
+          DataCell(Text(l10n.unlimited)),
         ]),
         DataRow(cells: [
-          DataCell(Text('Öncelikli Destek')),
-          DataCell(Icon(Icons.close, color: Colors.red)),
-          DataCell(Icon(Icons.check, color: Colors.green)),
+          DataCell(Text(l10n.prioritySupport)),
+          const DataCell(Icon(Icons.close, color: Colors.red)),
+          const DataCell(Icon(Icons.check, color: Colors.green)),
         ]),
       ],
     );
@@ -111,18 +115,19 @@ class _PricingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
       children: [
         Text(
-          'Premium Planlar',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          l10n.premiumPlans,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _PriceCard(label: 'Aylık', price: '\$2.99/ay'),
-            _PriceCard(label: 'Yıllık', price: '\$19.99/yıl'),
+            _PriceCard(label: l10n.monthly, price: '\$2.99/ay'),
+            _PriceCard(label: l10n.yearly, price: '\$19.99/yıl'),
           ],
         ),
       ],
@@ -166,6 +171,7 @@ class _PurchaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ElevatedButton(
       onPressed: isLoading
           ? null
@@ -178,7 +184,7 @@ class _PurchaseButton extends StatelessWidget {
               width: 20,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : const Text("Premium'a Geç"),
+          : Text(l10n.upgradeToPremium),
     );
   }
 }
@@ -188,11 +194,12 @@ class _RestoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return TextButton(
       onPressed: () => context
           .read<SubscriptionBloc>()
           .add(const RestorePurchasesEvent()),
-      child: const Text('Satın Alımları Geri Yükle'),
+      child: Text(l10n.restorePurchases),
     );
   }
 }

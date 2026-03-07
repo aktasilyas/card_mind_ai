@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/game_header.dart';
 import '../../domain/entities/deck.dart';
 import '../bloc/deck_bloc.dart';
@@ -21,6 +22,7 @@ class _DeckView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Column(
         children: [
@@ -48,17 +50,17 @@ class _DeckView extends StatelessWidget {
                                       .withValues(alpha: 0.4),
                                 ),
                                 const SizedBox(height: 16),
-                                const Text(
-                                  'Henuz deste yok,\nilk desteni olustur!',
+                                Text(
+                                  l10n.noDecksYet,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 18),
                                 ),
                                 const SizedBox(height: 24),
                                 FilledButton.icon(
                                   onPressed: () =>
                                       _showCreateDeckSheet(context),
                                   icon: const Icon(Icons.add),
-                                  label: const Text('Deste Olustur'),
+                                  label: Text(l10n.createDeck),
                                 ),
                               ],
                             ),
@@ -85,7 +87,7 @@ class _DeckView extends StatelessWidget {
                             onPressed: () => context
                                 .read<DeckBloc>()
                                 .add(const LoadDecks()),
-                            child: const Text('Tekrar Dene'),
+                            child: Text(l10n.retry),
                           ),
                         ],
                       ),
@@ -108,6 +110,7 @@ class _DeckView extends StatelessWidget {
     final nameController = TextEditingController();
     final descriptionController = TextEditingController();
     final bloc = context.read<DeckBloc>();
+    final l10n = AppLocalizations.of(context)!;
 
     showModalBottomSheet<void>(
       context: context,
@@ -127,20 +130,20 @@ class _DeckView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Yeni Deste Olustur',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                l10n.newDeck,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'Isim'),
+                decoration: InputDecoration(labelText: l10n.deckName),
                 autofocus: true,
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Aciklama'),
+                decoration: InputDecoration(labelText: l10n.deckDescription),
               ),
               const SizedBox(height: 16),
               FilledButton(
@@ -154,7 +157,7 @@ class _DeckView extends StatelessWidget {
                     Navigator.of(sheetContext).pop();
                   }
                 },
-                child: const Text('Olustur'),
+                child: Text(l10n.create),
               ),
             ],
           ),
@@ -172,6 +175,7 @@ class _DeckCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colors =
         AppTheme.deckGradients[gradientIndex % AppTheme.deckGradients.length];
 
@@ -239,7 +243,7 @@ class _DeckCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '${deck.cardCount} kart',
+                  l10n.cardCount(deck.cardCount),
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

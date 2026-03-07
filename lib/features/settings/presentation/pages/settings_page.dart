@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/services/notification_service.dart';
 import '../../../subscription/domain/entities/subscription_status.dart';
 import '../../../subscription/presentation/bloc/subscription_bloc.dart';
@@ -22,9 +23,10 @@ class _SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ayarlar'),
+        title: Text(l10n.settings),
         centerTitle: false,
       ),
       body: BlocConsumer<SettingsBloc, SettingsState>(
@@ -45,17 +47,19 @@ class _SettingsView extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.symmetric(vertical: 8),
             children: [
-              const _SectionHeader(title: 'Calisma'),
+              _SectionHeader(title: l10n.study),
               _DailyGoalTile(currentGoal: settings.dailyGoal),
-              const _SectionHeader(title: 'Bildirimler'),
+              _SectionHeader(title: l10n.notifications),
               _NotificationTile(
                 enabled: settings.notificationsEnabled,
                 hour: settings.notificationHour,
                 minute: settings.notificationMinute,
               ),
-              const _SectionHeader(title: 'Gorunum'),
+              _SectionHeader(title: l10n.appearance),
               _ThemeTile(current: settings.themeMode),
-              const _SectionHeader(title: 'Abonelik'),
+              _SectionHeader(title: l10n.language),
+              _LanguageTile(currentLocale: settings.locale),
+              _SectionHeader(title: l10n.subscription),
               const _SubscriptionTile(),
               const SizedBox(height: 32),
             ],
@@ -94,10 +98,11 @@ class _DailyGoalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListTile(
       leading: const Icon(Icons.flag_rounded),
-      title: const Text('Gunluk Hedef'),
-      subtitle: Text('$currentGoal kart/gun'),
+      title: Text(l10n.dailyGoalSetting),
+      subtitle: Text('$currentGoal ${l10n.cardsPerDay}'),
       trailing: const Icon(Icons.chevron_right),
       onTap: () => _showGoalSheet(context),
     );
@@ -105,6 +110,7 @@ class _DailyGoalTile extends StatelessWidget {
 
   void _showGoalSheet(BuildContext context) {
     final bloc = context.read<SettingsBloc>();
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
@@ -115,7 +121,7 @@ class _DailyGoalTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
               child: Text(
-                'Gunluk Hedef',
+                l10n.dailyGoalSetting,
                 style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -131,7 +137,7 @@ class _DailyGoalTile extends StatelessWidget {
                       ? Theme.of(ctx).colorScheme.primary
                       : null,
                 ),
-                title: Text('$goal kart/gun'),
+                title: Text('$goal ${l10n.cardsPerDay}'),
                 onTap: () {
                   bloc.add(UpdateDailyGoal(goal));
                   Navigator.pop(ctx);
@@ -159,12 +165,13 @@ class _NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final timeStr =
         '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
     return ListTile(
       leading: const Icon(Icons.notifications_rounded),
-      title: const Text('Gunluk Hatirlatma'),
-      subtitle: Text(enabled ? 'Acik — $timeStr' : 'Kapali'),
+      title: Text(l10n.dailyReminder),
+      subtitle: Text(enabled ? l10n.reminderOn(timeStr) : l10n.reminderOff),
       trailing: Switch(
         value: enabled,
         onChanged: (val) => _onToggle(context, val),
@@ -219,23 +226,25 @@ class _ThemeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListTile(
       leading: const Icon(Icons.palette_rounded),
-      title: const Text('Tema'),
-      subtitle: Text(_label(current)),
+      title: Text(l10n.theme),
+      subtitle: Text(_label(l10n, current)),
       trailing: const Icon(Icons.chevron_right),
       onTap: () => _showThemeSheet(context),
     );
   }
 
-  String _label(ThemeMode mode) => switch (mode) {
-        ThemeMode.light => 'Acik',
-        ThemeMode.dark => 'Koyu',
-        ThemeMode.system => 'Sistem',
+  String _label(AppLocalizations l10n, ThemeMode mode) => switch (mode) {
+        ThemeMode.light => l10n.themeLight,
+        ThemeMode.dark => l10n.themeDark,
+        ThemeMode.system => l10n.themeSystem,
       };
 
   void _showThemeSheet(BuildContext context) {
     final bloc = context.read<SettingsBloc>();
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
@@ -246,7 +255,7 @@ class _ThemeTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
               child: Text(
-                'Tema',
+                l10n.theme,
                 style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -262,9 +271,77 @@ class _ThemeTile extends StatelessWidget {
                       ? Theme.of(ctx).colorScheme.primary
                       : null,
                 ),
-                title: Text(_label(mode)),
+                title: Text(_label(l10n, mode)),
                 onTap: () {
                   bloc.add(UpdateThemeMode(mode));
+                  Navigator.pop(ctx);
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageTile extends StatelessWidget {
+  final String currentLocale;
+  const _LanguageTile({required this.currentLocale});
+
+  static const _locales = <String>['tr', 'en'];
+
+  String _label(AppLocalizations l10n, String locale) => switch (locale) {
+        'tr' => l10n.languageTurkish,
+        'en' => l10n.languageEnglish,
+        _ => locale,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return ListTile(
+      leading: const Icon(Icons.language_rounded),
+      title: Text(l10n.language),
+      subtitle: Text(_label(l10n, currentLocale)),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => _showLanguageSheet(context),
+    );
+  }
+
+  void _showLanguageSheet(BuildContext context) {
+    final bloc = context.read<SettingsBloc>();
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+              child: Text(
+                l10n.language,
+                style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            ..._locales.map(
+              (locale) => ListTile(
+                leading: Icon(
+                  locale == currentLocale
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_unchecked,
+                  color: locale == currentLocale
+                      ? Theme.of(ctx).colorScheme.primary
+                      : null,
+                ),
+                title: Text(_label(l10n, locale)),
+                onTap: () {
+                  bloc.add(UpdateLocale(locale));
                   Navigator.pop(ctx);
                 },
               ),
@@ -282,6 +359,7 @@ class _SubscriptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<SubscriptionBloc, SubscriptionState>(
       builder: (context, state) {
         final isPremium = state is SubscriptionLoaded &&
@@ -291,10 +369,10 @@ class _SubscriptionTile extends StatelessWidget {
             isPremium ? Icons.workspace_premium : Icons.lock_open_rounded,
             color: isPremium ? Colors.amber : null,
           ),
-          title: Text(isPremium ? 'CardMind Premium' : 'Premium\'a Gec'),
+          title: Text(isPremium ? l10n.cardMindPremium : l10n.upgradeToPremium),
           subtitle: Text(isPremium
-              ? 'Aktif — Tum ozellikler acik'
-              : 'PDF, sesli giris ve daha fazlasi'),
+              ? l10n.premiumActive
+              : l10n.premiumDescription),
           trailing: isPremium ? null : const Icon(Icons.chevron_right),
           onTap: isPremium ? null : () => _openPaywall(context),
         );

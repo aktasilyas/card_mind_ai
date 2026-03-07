@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -78,11 +81,22 @@ class CardMindApp extends StatelessWidget {
             final themeMode = state is SettingsLoaded
                 ? state.settings.themeMode
                 : ThemeMode.dark;
+            final locale = state is SettingsLoaded
+                ? Locale(state.settings.locale)
+                : const Locale('tr');
             return MaterialApp.router(
               title: 'CardMind AI',
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: themeMode,
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
               routerConfig: router,
               debugShowCheckedModeBanner: false,
             );

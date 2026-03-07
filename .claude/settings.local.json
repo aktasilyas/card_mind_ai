@@ -23,7 +23,12 @@
       "Bash(git:*)",
       "Bash(/usr/local/flutter/bin/flutter test:*)",
       "Bash(/usr/bin/flutter pub:*)",
-      "Bash(dart analyze:*)"
+      "Bash(dart analyze:*)",
+      "Bash(/mnt/c/Users/aktas/source/repos/card_mind_ai/l10n.yaml:*)",
+      "Bash(/mnt/c/Users/aktas/source/repos/card_mind_ai/lib/l10n/app_en.arb:*)",
+      "Bash(/mnt/c/Users/aktas/source/repos/card_mind_ai/lib/l10n/app_tr.arb:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(/mnt/c/Users/aktas/flutter/bin/flutter gen-l10n:*)"
     ]
   }
 }

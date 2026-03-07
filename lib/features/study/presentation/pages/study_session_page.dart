@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/game_header.dart';
 import '../../../stats/presentation/bloc/stats_bloc.dart';
 import '../bloc/study_bloc.dart';
@@ -28,6 +29,7 @@ class _StudySessionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Column(
         children: [
@@ -62,16 +64,16 @@ class _StudySessionView extends StatelessWidget {
                               color: Colors.green.shade300,
                             ),
                             const SizedBox(height: 16),
-                            const Text(
-                              'Bugun calisilacak kart yok!',
-                              style: TextStyle(fontSize: 20),
+                            Text(
+                              l10n.noCardsToStudy,
+                              style: const TextStyle(fontSize: 20),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 24),
                             FilledButton.icon(
                               onPressed: () => context.pop(),
                               icon: const Icon(Icons.arrow_back),
-                              label: const Text('Geri Don'),
+                              label: Text(l10n.goBack),
                             ),
                           ],
                         ),
@@ -128,7 +130,7 @@ class _StudySessionView extends StatelessWidget {
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () => context.pop(),
-                            child: const Text('Geri Don'),
+                            child: Text(l10n.goBack),
                           ),
                         ],
                       ),

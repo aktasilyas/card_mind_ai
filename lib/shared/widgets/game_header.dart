@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/stats/presentation/bloc/stats_bloc.dart';
+import '../../l10n/app_localizations.dart';
 
 class GameHeader extends StatelessWidget {
   const GameHeader({super.key});
@@ -101,6 +102,7 @@ class _XpProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -108,7 +110,7 @@ class _XpProgressBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Seviye $level',
+              l10n.levelLabel(level),
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,

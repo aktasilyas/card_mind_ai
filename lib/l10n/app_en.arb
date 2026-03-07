@@ -1,0 +1,405 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "CardMind AI",
+  "@appTitle": {},
+
+  "navHome": "Home",
+  "@navHome": {},
+
+  "navStats": "Statistics",
+  "@navStats": {},
+
+  "navSettings": "Settings",
+  "@navSettings": {},
+
+  "noDecksYet": "No decks yet,\ncreate your first deck!",
+  "@noDecksYet": {},
+
+  "createDeck": "Create Deck",
+  "@createDeck": {},
+
+  "newDeck": "Create New Deck",
+  "@newDeck": {},
+
+  "deckName": "Name",
+  "@deckName": {},
+
+  "deckDescription": "Description",
+  "@deckDescription": {},
+
+  "create": "Create",
+  "@create": {},
+
+  "retry": "Retry",
+  "@retry": {},
+
+  "cardCount": "{count} cards",
+  "@cardCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "startStudy": "Start Study",
+  "@startStudy": {},
+
+  "generateWithAi": "Generate with AI",
+  "@generateWithAi": {},
+
+  "noCardsYet": "No cards yet.\nTry generating cards with AI!",
+  "@noCardsYet": {},
+
+  "noCardsToStudy": "No cards to study today!",
+  "@noCardsToStudy": {},
+
+  "goBack": "Go Back",
+  "@goBack": {},
+
+  "greatJob": "Great Job!",
+  "@greatJob": {},
+
+  "totalCards": "Total Cards",
+  "@totalCards": {},
+
+  "averageScore": "Average Score",
+  "@averageScore": {},
+
+  "goToHome": "Go to Home",
+  "@goToHome": {},
+
+  "tapCard": "Tap the card",
+  "@tapCard": {},
+
+  "ratingWorst": "Nothing",
+  "@ratingWorst": {},
+
+  "ratingHard": "Hard",
+  "@ratingHard": {},
+
+  "ratingStruggled": "Struggled",
+  "@ratingStruggled": {},
+
+  "ratingMedium": "Medium",
+  "@ratingMedium": {},
+
+  "ratingEasy": "Easy",
+  "@ratingEasy": {},
+
+  "ratingPerfect": "Perfect",
+  "@ratingPerfect": {},
+
+  "question": "QUESTION",
+  "@question": {},
+
+  "answer": "ANSWER",
+  "@answer": {},
+
+  "tapToFlip": "Tap to flip",
+  "@tapToFlip": {},
+
+  "statistics": "Statistics",
+  "@statistics": {},
+
+  "dailyGoal": "Daily Goal",
+  "@dailyGoal": {},
+
+  "weeklyXp": "Weekly XP",
+  "@weeklyXp": {},
+
+  "totalXp": "Total XP",
+  "@totalXp": {},
+
+  "streak": "Streak",
+  "@streak": {},
+
+  "streakDays": "{count} days",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "achievement": "Achievement",
+  "@achievement": {},
+
+  "totalCardsStudied": "Total Cards",
+  "@totalCardsStudied": {},
+
+  "badges": "Badges",
+  "@badges": {},
+
+  "noBadgesYet": "No badges earned yet.\nKeep studying!",
+  "@noBadgesYet": {},
+
+  "mon": "Mon",
+  "@mon": {},
+
+  "tue": "Tue",
+  "@tue": {},
+
+  "wed": "Wed",
+  "@wed": {},
+
+  "thu": "Thu",
+  "@thu": {},
+
+  "fri": "Fri",
+  "@fri": {},
+
+  "sat": "Sat",
+  "@sat": {},
+
+  "sun": "Sun",
+  "@sun": {},
+
+  "settings": "Settings",
+  "@settings": {},
+
+  "study": "Study",
+  "@study": {},
+
+  "notifications": "Notifications",
+  "@notifications": {},
+
+  "appearance": "Appearance",
+  "@appearance": {},
+
+  "subscription": "Subscription",
+  "@subscription": {},
+
+  "dailyGoalSetting": "Daily Goal",
+  "@dailyGoalSetting": {},
+
+  "cardsPerDay": "cards/day",
+  "@cardsPerDay": {},
+
+  "dailyReminder": "Daily Reminder",
+  "@dailyReminder": {},
+
+  "reminderOn": "On — {time}",
+  "@reminderOn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "reminderOff": "Off",
+  "@reminderOff": {},
+
+  "theme": "Theme",
+  "@theme": {},
+
+  "themeLight": "Light",
+  "@themeLight": {},
+
+  "themeDark": "Dark",
+  "@themeDark": {},
+
+  "themeSystem": "System",
+  "@themeSystem": {},
+
+  "cardMindPremium": "CardMind Premium",
+  "@cardMindPremium": {},
+
+  "premiumActive": "Active — All features unlocked",
+  "@premiumActive": {},
+
+  "premiumDescription": "PDF, voice input and more",
+  "@premiumDescription": {},
+
+  "upgradeToPremium": "Upgrade to Premium",
+  "@upgradeToPremium": {},
+
+  "aiCardGenerator": "AI Card Generator",
+  "@aiCardGenerator": {},
+
+  "uploadFromFile": "Upload from File",
+  "@uploadFromFile": {},
+
+  "listening": "Listening...",
+  "@listening": {},
+
+  "enterTextHint": "Enter topic or text here...",
+  "@enterTextHint": {},
+
+  "cardCountLabel": "Card Count",
+  "@cardCountLabel": {},
+
+  "generateCards": "Generate Cards",
+  "@generateCards": {},
+
+  "cardsGenerated": "{count} cards generated",
+  "@cardsGenerated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "saveAll": "Save All ({count})",
+  "@saveAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "dailyLimitReached": "Daily Limit Reached",
+  "@dailyLimitReached": {},
+
+  "premiumUnlimited": "Generate unlimited cards with Premium and unlock all features.",
+  "@premiumUnlimited": {},
+
+  "micPermissionRequired": "Microphone permission required",
+  "@micPermissionRequired": {},
+
+  "cardsAddedToDeck": "{count} cards added to deck",
+  "@cardsAddedToDeck": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "premium": "Premium",
+  "@premium": {},
+
+  "premiumActiveTitle": "Premium Active",
+  "@premiumActiveTitle": {},
+
+  "allFeaturesAccess": "You have access to all features.",
+  "@allFeaturesAccess": {},
+
+  "feature": "Feature",
+  "@feature": {},
+
+  "free": "Free",
+  "@free": {},
+
+  "ads": "Ads",
+  "@ads": {},
+
+  "adsYes": "Yes",
+  "@adsYes": {},
+
+  "adsNo": "No",
+  "@adsNo": {},
+
+  "aiCardGeneration": "AI Card Generation",
+  "@aiCardGeneration": {},
+
+  "fivePerDay": "5/day",
+  "@fivePerDay": {},
+
+  "unlimited": "Unlimited",
+  "@unlimited": {},
+
+  "prioritySupport": "Priority Support",
+  "@prioritySupport": {},
+
+  "premiumPlans": "Premium Plans",
+  "@premiumPlans": {},
+
+  "monthly": "Monthly",
+  "@monthly": {},
+
+  "yearly": "Yearly",
+  "@yearly": {},
+
+  "restorePurchases": "Restore Purchases",
+  "@restorePurchases": {},
+
+  "premiumFeatureOnly": "This feature is for Premium users only.",
+  "@premiumFeatureOnly": {},
+
+  "start": "START",
+  "@start": {},
+
+  "next": "NEXT",
+  "@next": {},
+
+  "smartStudy": "Study smart, learn more",
+  "@smartStudy": {},
+
+  "aiPoweredLearning": "AI-powered learning",
+  "@aiPoweredLearning": {},
+
+  "whatWeOffer": "What do we offer?",
+  "@whatWeOffer": {},
+
+  "powerfulTools": "Powerful tools to accelerate your learning",
+  "@powerfulTools": {},
+
+  "aiCardGenerationFeature": "AI Card Generation",
+  "@aiCardGenerationFeature": {},
+
+  "aiCardGenerationDesc": "Create flashcards instantly with AI",
+  "@aiCardGenerationDesc": {},
+
+  "smartRepetition": "Smart Repetition",
+  "@smartRepetition": {},
+
+  "smartRepetitionDesc": "Most efficient study with SM-2 algorithm",
+  "@smartRepetitionDesc": {},
+
+  "gamification": "Gamification",
+  "@gamification": {},
+
+  "gamificationDesc": "Motivation with XP, streaks and achievements",
+  "@gamificationDesc": {},
+
+  "chooseDailyGoal": "Choose your daily goal",
+  "@chooseDailyGoal": {},
+
+  "howManyCards": "How many cards do you want to study each day?",
+  "@howManyCards": {},
+
+  "greatStart": "You can make a great start with {count} cards per day!",
+  "@greatStart": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "cardsPerDayUnit": "cards/day",
+  "@cardsPerDayUnit": {},
+
+  "language": "Language",
+  "@language": {},
+
+  "languageTurkish": "Türkçe",
+  "@languageTurkish": {},
+
+  "languageEnglish": "English",
+  "@languageEnglish": {},
+
+  "levelLabel": "Level {level}",
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+
+  "goalCards": "/ {goal} cards",
+  "@goalCards": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  }
+}

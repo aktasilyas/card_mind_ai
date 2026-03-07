@@ -20,6 +20,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<UpdateDailyGoal>(_onUpdateDailyGoal);
     on<UpdateNotification>(_onUpdateNotification);
     on<UpdateThemeMode>(_onUpdateThemeMode);
+    on<UpdateLocale>(_onUpdateLocale);
   }
 
   AppSettings get _current =>
@@ -53,6 +54,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Future<void> _onUpdateThemeMode(
       UpdateThemeMode event, Emitter<SettingsState> emit) async {
     final updated = _current.copyWith(themeMode: event.themeMode);
+    await _save(updated, emit);
+  }
+
+  Future<void> _onUpdateLocale(
+      UpdateLocale event, Emitter<SettingsState> emit) async {
+    final updated = _current.copyWith(locale: event.locale);
     await _save(updated, emit);
   }
 

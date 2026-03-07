@@ -31,3 +31,9 @@ final class UpdateThemeMode extends SettingsEvent {
 
   final ThemeMode themeMode;
 }
+
+final class UpdateLocale extends SettingsEvent {
+  const UpdateLocale(this.locale);
+
+  final String locale;
+}

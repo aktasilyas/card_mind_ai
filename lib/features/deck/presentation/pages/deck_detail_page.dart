@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/deck.dart';
 import '../../domain/entities/flashcard.dart';
 import '../../domain/usecases/get_cards_by_deck.dart';
@@ -71,6 +72,7 @@ class _DeckDetailViewState extends State<_DeckDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(title: Text(widget.deck.name)),
       body: _loading
@@ -87,7 +89,7 @@ class _DeckDetailViewState extends State<_DeckDetailView> {
                           onPressed: () =>
                               context.push('/study/${widget.deck.id}'),
                           icon: const Icon(Icons.play_arrow),
-                          label: const Text('Çalışmaya Başla'),
+                          label: Text(l10n.startStudy),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -96,7 +98,7 @@ class _DeckDetailViewState extends State<_DeckDetailView> {
                           onPressed: () =>
                               context.push('/ai-generate/${widget.deck.id}'),
                           icon: const Icon(Icons.auto_awesome),
-                          label: const Text('AI ile Üret'),
+                          label: Text(l10n.generateWithAi),
                         ),
                       ),
                     ],
@@ -105,9 +107,9 @@ class _DeckDetailViewState extends State<_DeckDetailView> {
                 const Divider(),
                 Expanded(
                   child: _cards == null || _cards!.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Text(
-                            'Henüz kart yok.\nAI ile kart üretmeyi deneyin!',
+                            l10n.noCardsYet,
                             textAlign: TextAlign.center,
                           ),
                         )

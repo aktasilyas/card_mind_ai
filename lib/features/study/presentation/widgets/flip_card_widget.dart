@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class FlipCardWidget extends StatefulWidget {
   const FlipCardWidget({
@@ -58,6 +59,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: widget.onFlip,
       child: AnimatedBuilder(
@@ -72,7 +74,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget>
               ..setEntry(3, 2, 0.001)
               ..rotateY(angle),
             child: isFront
-                ? _buildSide(widget.front, 'Karta dokun')
+                ? _buildSide(widget.front, l10n.tapCard)
                 : Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.identity()..rotateY(pi),
