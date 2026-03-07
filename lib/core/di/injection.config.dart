@@ -17,6 +17,8 @@ import 'package:card_mind_ai/features/ai_generate/data/repositories/ai_generate_
     as _i790;
 import 'package:card_mind_ai/features/ai_generate/domain/repositories/ai_generate_repository.dart'
     as _i609;
+import 'package:card_mind_ai/features/ai_generate/domain/usecases/extract_text_from_file.dart'
+    as _i1051;
 import 'package:card_mind_ai/features/ai_generate/domain/usecases/generate_cards_from_text.dart'
     as _i251;
 import 'package:card_mind_ai/features/ai_generate/presentation/bloc/ai_generate_bloc.dart'
@@ -137,6 +139,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
+    gh.factory<_i1051.ExtractTextFromFile>(() => _i1051.ExtractTextFromFile());
     gh.singleton<_i466.DioClient>(() => _i466.DioClient());
     gh.singleton<_i573.AdmobService>(() => _i573.AdmobService());
     gh.lazySingleton<_i879.NotificationService>(

@@ -8,7 +8,20 @@
       "Bash(flutter.bat pub:*)",
       "Bash(powershell.exe:*)",
       "Bash(/mnt/c/Users/aktas/flutter_sdk/flutter/bin/flutter.bat test:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(flutter test:*)",
+      "Bash(/mnt/c/Users/aktas/flutter/bin/flutter test:*)",
+      "Read(//snap/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Read(//mnt/c/**)",
+      "Bash(bash:*)",
+      "Bash(/mnt/c/Users/aktas/flutter/bin/dart test:*)",
+      "Bash(/mnt/c/Users/aktas/flutter/bin/flutter pub:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git:*)",
+      "Bash(/usr/local/flutter/bin/flutter test:*)"
     ]
   }
 }
