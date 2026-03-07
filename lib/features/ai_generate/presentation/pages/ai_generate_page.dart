@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/duo_button.dart';
 import '../../../deck/domain/entities/flashcard.dart';
 import '../../../deck/domain/usecases/add_card.dart';
 import '../../domain/usecases/extract_text_from_file.dart';
+import '../../domain/usecases/speech_to_text_usecase.dart';
 import '../bloc/ai_generate_bloc.dart';
 
 class AiGeneratePage extends StatelessWidget {
@@ -40,9 +42,11 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
   final _textController = TextEditingController();
   final _addCard = getIt<AddCard>();
   final _extractText = getIt<ExtractTextFromFile>();
+  final _speechToText = getIt<SpeechToTextUseCase>();
   bool _saving = false;
   bool _hasText = false;
   bool _extractingFile = false;
+  bool _isListening = false;
   List<Flashcard> _localCards = [];
 
   static const List<int> _cardCountOptions = [5, 10, 15, 20];
@@ -64,7 +68,87 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
   void dispose() {
     _textController.removeListener(_onTextChanged);
     _textController.dispose();
+    _speechToText.cancel();
     super.dispose();
+  }
+
+  Future<void> _toggleListening() async {
+    if (_isListening) {
+      final result = await _speechToText.stopListening();
+      if (!mounted) return;
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(failure.message),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: AppTheme.duoRed,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+        },
+        (recognizedText) {
+          if (recognizedText.isNotEmpty) {
+            _textController.text = recognizedText;
+          }
+        },
+      );
+      setState(() => _isListening = false);
+      return;
+    }
+
+    final initResult = await _speechToText.initialize();
+    if (!mounted) return;
+
+    final initFailure = initResult.fold<Failure?>((f) => f, (_) => null);
+    if (initFailure != null) {
+      final message = initFailure is PermissionFailure
+          ? 'Mikrofon izni gerekli'
+          : initFailure.message;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppTheme.duoRed,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isListening = true);
+
+    final listenResult = await _speechToText.startListening(
+      onResult: (recognizedText) {
+        if (!mounted) return;
+        setState(() {
+          _textController.text = recognizedText;
+          _isListening = false;
+        });
+      },
+    );
+
+    if (!mounted) return;
+    listenResult.fold(
+      (failure) {
+        setState(() => _isListening = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(failure.message),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppTheme.duoRed,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      },
+      (_) {},
+    );
   }
 
   void _removeCard(int index) {
@@ -262,14 +346,19 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
       minLines: 4,
       maxLines: 8,
       maxLength: 2000,
+      readOnly: _isListening,
       style: theme.textTheme.bodyLarge,
       decoration: InputDecoration(
-        hintText: 'Konuyu veya metni buraya yazın...',
+        hintText: _isListening ? 'Dinleniyor...' : 'Konuyu veya metni buraya yazın...',
         hintStyle: theme.textTheme.bodyLarge?.copyWith(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+          color: _isListening
+              ? AppTheme.duoRed.withValues(alpha: 0.7)
+              : theme.colorScheme.onSurface.withValues(alpha: 0.4),
         ),
         filled: true,
-        fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        fillColor: _isListening
+            ? AppTheme.duoRed.withValues(alpha: 0.05)
+            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(
@@ -279,19 +368,33 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(
-            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+            color: _isListening
+                ? AppTheme.duoRed.withValues(alpha: 0.5)
+                : theme.colorScheme.outline.withValues(alpha: 0.2),
+            width: _isListening ? 2 : 1,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: AppTheme.duoGreen,
+          borderSide: BorderSide(
+            color: _isListening ? AppTheme.duoRed : AppTheme.duoGreen,
             width: 2,
           ),
         ),
         contentPadding: const EdgeInsets.all(20),
         counterStyle: theme.textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+        ),
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 8, top: 8),
+          child: _PulseMicButton(
+            isListening: _isListening,
+            onTap: _toggleListening,
+          ),
+        ),
+        suffixIconConstraints: const BoxConstraints(
+          minWidth: 48,
+          minHeight: 48,
         ),
       ),
     );
@@ -508,6 +611,119 @@ class _AiGenerateViewState extends State<_AiGenerateView> {
             onPressed: () => context.push('/subscription'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════
+// Pulse Mic Button Widget
+// ════════════════════════════════════════════════
+class _PulseMicButton extends StatefulWidget {
+  const _PulseMicButton({
+    required this.isListening,
+    required this.onTap,
+  });
+
+  final bool isListening;
+  final VoidCallback onTap;
+
+  @override
+  State<_PulseMicButton> createState() => _PulseMicButtonState();
+}
+
+class _PulseMicButtonState extends State<_PulseMicButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.35).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+    _opacityAnimation = Tween<double>(begin: 0.6, end: 0.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void didUpdateWidget(_PulseMicButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isListening && !oldWidget.isListening) {
+      _pulseController.repeat(reverse: false);
+    } else if (!widget.isListening && oldWidget.isListening) {
+      _pulseController.stop();
+      _pulseController.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: SizedBox(
+        width: 44,
+        height: 44,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            if (widget.isListening)
+              AnimatedBuilder(
+                animation: _pulseController,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Opacity(
+                      opacity: _opacityAnimation.value,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: AppTheme.duoRed,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppTheme.duoRed,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.duoRed.withValues(alpha: 0.4),
+                    blurRadius: widget.isListening ? 8 : 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                widget.isListening ? Icons.stop_rounded : Icons.mic_rounded,
+                color: Colors.white,
+                size: 22,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

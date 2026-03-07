@@ -21,6 +21,8 @@ import 'package:card_mind_ai/features/ai_generate/domain/usecases/extract_text_f
     as _i1051;
 import 'package:card_mind_ai/features/ai_generate/domain/usecases/generate_cards_from_text.dart'
     as _i251;
+import 'package:card_mind_ai/features/ai_generate/domain/usecases/speech_to_text_usecase.dart'
+    as _i10;
 import 'package:card_mind_ai/features/ai_generate/presentation/bloc/ai_generate_bloc.dart'
     as _i379;
 import 'package:card_mind_ai/features/deck/data/datasources/deck_local_datasource.dart'
@@ -110,6 +112,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:hive/hive.dart' as _i979;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
+import 'package:speech_to_text/speech_to_text.dart' as _i941;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -142,6 +145,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1051.ExtractTextFromFile>(() => _i1051.ExtractTextFromFile());
     gh.singleton<_i466.DioClient>(() => _i466.DioClient());
     gh.singleton<_i573.AdmobService>(() => _i573.AdmobService());
+    gh.lazySingleton<_i941.SpeechToText>(() => registerModule.speechToText);
     gh.lazySingleton<_i879.NotificationService>(
       () => _i879.NotificationService(),
     );
@@ -176,6 +180,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i844.SubscriptionRepositoryImpl(
         gh<_i273.SubscriptionRemoteDatasource>(),
       ),
+    );
+    gh.factory<_i10.SpeechToTextUseCase>(
+      () => _i10.SpeechToTextUseCase(gh<_i941.SpeechToText>()),
     );
     gh.lazySingleton<_i430.DeckRepository>(
       () => _i581.DeckRepositoryImpl(gh<_i837.DeckLocalDatasource>()),

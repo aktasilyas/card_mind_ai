@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../features/deck/data/models/deck_model.dart';
 import '../../features/deck/data/models/flashcard_model.dart';
@@ -10,6 +11,8 @@ import '../constants/app_constants.dart';
 
 @module
 abstract class RegisterModule {
+  @lazySingleton
+  SpeechToText get speechToText => SpeechToText();
   @preResolve
   Future<Box<DeckModel>> get decksBox =>
       Hive.openBox<DeckModel>(AppConstants.hiveDecksBox);

@@ -21,7 +21,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git:*)",
-      "Bash(/usr/local/flutter/bin/flutter test:*)"
+      "Bash(/usr/local/flutter/bin/flutter test:*)",
+      "Bash(/usr/bin/flutter pub:*)",
+      "Bash(dart analyze:*)"
     ]
   }
 }

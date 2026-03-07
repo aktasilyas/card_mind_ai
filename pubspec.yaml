@@ -55,6 +55,7 @@ dependencies:
   timezone: ^0.9.4
   file_picker: ^8.1.2
   syncfusion_flutter_pdf: ^27.1.58
+  speech_to_text: ^7.0.0
 
 dev_dependencies:
   flutter_test:

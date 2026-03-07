@@ -27,3 +27,7 @@ final class AuthFailure extends Failure {
 final class PurchaseFailure extends Failure {
   const PurchaseFailure(super.message);
 }
+
+final class PermissionFailure extends Failure {
+  const PermissionFailure(super.message);
+}
