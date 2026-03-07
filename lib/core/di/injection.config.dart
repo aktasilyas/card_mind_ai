@@ -47,6 +47,14 @@ import 'package:card_mind_ai/features/deck/domain/usecases/update_card.dart'
     as _i747;
 import 'package:card_mind_ai/features/deck/presentation/bloc/deck_bloc.dart'
     as _i1034;
+import 'package:card_mind_ai/features/onboarding/data/repositories/onboarding_repository_impl.dart'
+    as _i840;
+import 'package:card_mind_ai/features/onboarding/domain/repositories/onboarding_repository.dart'
+    as _i31;
+import 'package:card_mind_ai/features/onboarding/domain/usecases/complete_onboarding.dart'
+    as _i942;
+import 'package:card_mind_ai/features/onboarding/domain/usecases/is_onboarding_completed.dart'
+    as _i1;
 import 'package:card_mind_ai/features/settings/data/datasources/settings_local_datasource.dart'
     as _i219;
 import 'package:card_mind_ai/features/settings/data/repositories/settings_repository_impl.dart'
@@ -152,6 +160,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i310.AiCardRemoteDatasource>(
       () => _i310.AiCardRemoteDatasourceImpl(gh<_i466.DioClient>()),
     );
+    gh.lazySingleton<_i31.OnboardingRepository>(
+      () => _i840.OnboardingRepositoryImpl(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i613.StatsRepository>(
       () => _i870.StatsRepositoryImpl(gh<_i522.StatsLocalDatasource>()),
     );
@@ -218,6 +229,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i110.CreateDeck>(),
         gh<_i260.DeleteDeck>(),
       ),
+    );
+    gh.lazySingleton<_i942.CompleteOnboarding>(
+      () => _i942.CompleteOnboarding(gh<_i31.OnboardingRepository>()),
+    );
+    gh.lazySingleton<_i1.IsOnboardingCompleted>(
+      () => _i1.IsOnboardingCompleted(gh<_i31.OnboardingRepository>()),
     );
     gh.factory<_i29.GetSubscriptionStatus>(
       () => _i29.GetSubscriptionStatus(gh<_i401.SubscriptionRepository>()),

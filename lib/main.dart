@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -8,6 +9,8 @@ import 'core/constants/api_keys.dart';
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/onboarding/domain/usecases/complete_onboarding.dart';
+import 'features/onboarding/domain/usecases/is_onboarding_completed.dart';
 import 'features/deck/data/models/deck_model.dart';
 import 'features/deck/data/models/flashcard_model.dart';
 import 'features/stats/data/models/study_session_record_model.dart';
@@ -40,11 +43,18 @@ Future<void> main() async {
     );
   }
 
-  runApp(const CardMindApp());
+  final router = createAppRouter(
+    isOnboardingCompleted: getIt<IsOnboardingCompleted>(),
+    completeOnboarding: getIt<CompleteOnboarding>(),
+  );
+
+  runApp(CardMindApp(router: router));
 }
 
 class CardMindApp extends StatelessWidget {
-  const CardMindApp({super.key});
+  const CardMindApp({super.key, required this.router});
+
+  final GoRouter router;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +83,7 @@ class CardMindApp extends StatelessWidget {
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: themeMode,
-              routerConfig: appRouter,
+              routerConfig: router,
               debugShowCheckedModeBanner: false,
             );
           },

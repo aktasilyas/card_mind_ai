@@ -3,11 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../di/injection.dart';
+import '../usecases/usecase.dart';
 import '../../features/ai_generate/presentation/bloc/ai_generate_bloc.dart';
 import '../../features/ai_generate/presentation/pages/ai_generate_page.dart';
 import '../../features/deck/presentation/bloc/deck_bloc.dart';
 import '../../features/deck/presentation/pages/deck_detail_page.dart';
 import '../../features/deck/presentation/pages/deck_page.dart';
+import '../../features/onboarding/domain/usecases/complete_onboarding.dart';
+import '../../features/onboarding/domain/usecases/is_onboarding_completed.dart';
+import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/stats/presentation/bloc/stats_bloc.dart';
 import '../../features/stats/presentation/pages/stats_page.dart';
@@ -19,9 +23,33 @@ import '../../features/subscription/presentation/pages/subscription_page.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-final appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  routes: [
+GoRouter createAppRouter({
+  required IsOnboardingCompleted isOnboardingCompleted,
+  required CompleteOnboarding completeOnboarding,
+}) =>
+    GoRouter(
+      navigatorKey: _rootNavigatorKey,
+      redirect: (context, state) async {
+        final result = await isOnboardingCompleted(const NoParams());
+        final completed = result.fold(
+          (_) => true,
+          (value) => value,
+        );
+        final isOnboardingRoute = state.matchedLocation == '/onboarding';
+
+        if (!completed && !isOnboardingRoute) return '/onboarding';
+        if (completed && isOnboardingRoute) return '/';
+        return null;
+      },
+      routes: [
+        GoRoute(
+          path: '/onboarding',
+          builder: (context, state) => OnboardingPage(
+            onComplete: (dailyGoal) async {
+              await completeOnboarding(const NoParams());
+            },
+          ),
+        ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return _ScaffoldWithNavBar(navigationShell: navigationShell);
@@ -123,7 +151,7 @@ final appRouter = GoRouter(
       ],
     ),
   ],
-);
+    );
 
 class _ScaffoldWithNavBar extends StatelessWidget {
   const _ScaffoldWithNavBar({required this.navigationShell});
